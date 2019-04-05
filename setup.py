@@ -1,4 +1,5 @@
 import pathlib
+
 from setuptools import setup
 
 # The directory containing this file
@@ -25,4 +26,5 @@ setup(
     ],
     packages=["autohandshake"],
     include_package_data=True,
+    install_requires=['selenium']
 )
