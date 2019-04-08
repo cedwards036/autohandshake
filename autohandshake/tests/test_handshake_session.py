@@ -18,24 +18,24 @@ class TestHandshakeSession(unittest.TestCase):
         login_style_url = "https://jhu.joinhandshake.com/login"
 
         with self.assertRaises(InvalidURLError):
-            HandshakeSession(login_url=completely_wrong_url)
+            HandshakeSession(home_url=completely_wrong_url)
 
         with self.assertRaises(InvalidURLError):
-            HandshakeSession(login_url=invalid_url)
+            HandshakeSession(home_url=invalid_url)
 
         with self.assertRaises(InvalidURLError):
-            HandshakeSession(login_url=not_a_url)
+            HandshakeSession(home_url=not_a_url)
 
         with self.assertRaises(InvalidURLError):
-            with HandshakeSession(login_url=misspelled_school_url):
+            with HandshakeSession(home_url=misspelled_school_url):
                 pass
 
         with self.assertRaises(InvalidURLError):
-            with HandshakeSession(login_url=no_https):
+            with HandshakeSession(home_url=no_https):
                 pass
 
         with self.assertRaises(InvalidURLError):
-            with HandshakeSession(login_url=login_style_url):
+            with HandshakeSession(home_url=login_style_url):
                 pass
 
     def test_does_not_throw_error_given_valid_url(self):
@@ -44,13 +44,13 @@ class TestHandshakeSession(unittest.TestCase):
         slash_url = "https://jhu.joinhandshake.com/"
 
         try:
-            with HandshakeSession(login_url=standard_url):
+            with HandshakeSession(home_url=standard_url):
                 pass
         except ValueError:
             self.fail("Unexpected ValueError given a valid normal URL")
 
         try:
-            with HandshakeSession(login_url=slash_url):
+            with HandshakeSession(home_url=slash_url):
                 pass
         except ValueError:
             self.fail("Unexpected ValueError given a valid login-style URL")
@@ -58,11 +58,11 @@ class TestHandshakeSession(unittest.TestCase):
     def test_load_throws_error_given_invalid_page(self):
 
         with self.assertRaises(ValueError):
-            with HandshakeSession(login_url=self.valid_url) as hs:
+            with HandshakeSession(home_url=self.valid_url) as hs:
                 hs.load(32153)
 
         with self.assertRaises(ValueError):
-            with HandshakeSession(login_url=self.valid_url) as hs:
+            with HandshakeSession(home_url=self.valid_url) as hs:
                 hs.load("not a page")
 
     def test_load_does_not_throw_error_given_valid_page(self):
@@ -76,7 +76,7 @@ class TestHandshakeSession(unittest.TestCase):
                 pass
 
         try:
-            with HandshakeSession(login_url=self.valid_url) as hs:
+            with HandshakeSession(home_url=self.valid_url) as hs:
                 hs.load(ValidPage())
         except:
             self.fail("Unexpected Error given a valid page")

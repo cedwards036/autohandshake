@@ -21,28 +21,32 @@ class HandshakeSession:
 
     """
 
-    def __init__(self, login_url: str):
+    def __init__(self, home_url: str):
         """
         Initialize Handshake session.
 
-        :param login_url: a valid Handshake login url of the form
+        :param home_url: a valid Handshake homepage url of the form
                           "https://[school].joinhandshake.com"
-        :type login_url: str
+        :type home_url: str
         """
         options = webdriver.ChromeOptions()
         options.add_argument('--window-size=1920,1080')
 
-        if not self._login_url_str_is_valid(login_url):
+        if self._home_url_str_is_invalid(home_url):
             raise InvalidURLError('Login URL must be of the form '
                              '"https://[school].joinhandshake.com"')
 
-        self._login_url = login_url
+        # ensure url string ends with '.com' instead of '.com/'
+        if home_url[-1] == '/':
+            self._home_url = home_url[:-1]
+        else:
+            self._home_url = home_url
         self._browser = webdriver.Chrome(executable_path='../chromedriver.exe',
                                          options=options)
 
     def __enter__(self)->'HandshakeSession':
         """Open a web browser and log into Handshake, beginning the session"""
-        self._browser.get(self._login_url)
+        self._browser.get(self._home_url)
         if self._school_is_invalid():
             raise InvalidURLError('Invalid school in login URL')
         return self
@@ -67,7 +71,7 @@ class HandshakeSession:
         #TODO
 
     @staticmethod
-    def _login_url_str_is_valid(login_url: str)->bool:
+    def _home_url_str_is_invalid(login_url: str)->bool:
         """
         Determine whether or not a given Handshake login URL is valid
 
@@ -79,9 +83,9 @@ class HandshakeSession:
         try:
             re.match(r'^https://[a-zA-Z]+\.joinhandshake\.com/?$', login_url) \
                 .group(0)
-            return True
-        except AttributeError:
             return False
+        except AttributeError:
+            return True
 
 
     def _school_is_invalid(self)->bool:
