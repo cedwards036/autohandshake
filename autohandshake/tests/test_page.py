@@ -9,4 +9,4 @@ class TestPage(unittest.TestCase):
         with self.assertRaises(TypeError):
             class SomePage(Page):
                 pass
-            some_page = SomePage()
+            some_page = SomePage('url')
