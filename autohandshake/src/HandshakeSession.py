@@ -1,5 +1,3 @@
-import re
-
 from autohandshake.src.HandshakeBrowser import HandshakeBrowser
 from autohandshake.src.exceptions import InvalidURLError
 

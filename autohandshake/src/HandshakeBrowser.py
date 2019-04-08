@@ -50,6 +50,11 @@ class HandshakeBrowser:
             return False
 
 
+    @property
+    def current_url(self):
+        """Get the url of the browser's current page"""
+        return self._browser.current_url
+
     @staticmethod
     def _validate_url(url: str):
         """

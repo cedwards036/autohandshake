@@ -1,6 +1,8 @@
 import unittest
 
 from autohandshake.src.Pages.Page import Page
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src.constants import BASE_URL
 
 
 class TestPage(unittest.TestCase):
@@ -9,4 +11,4 @@ class TestPage(unittest.TestCase):
         with self.assertRaises(TypeError):
             class SomePage(Page):
                 pass
-            some_page = SomePage('url')
+            some_page = SomePage(BASE_URL, HandshakeBrowser())
