@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from selenium.webdriver.chrome.webdriver import WebDriver
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser
 
 class Page(ABC):
     """
@@ -16,7 +16,7 @@ class Page(ABC):
         self._url = url
 
     @abstractmethod
-    def page_is_loaded(self, browser: WebDriver)->bool:
+    def page_is_loaded(self, browser: HandshakeBrowser)->bool:
         """Determine whether or not the page has fully loaded.
 
         For pages without complex javascript involved in the load, simply
