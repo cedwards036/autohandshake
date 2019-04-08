@@ -1,13 +1,24 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import ElementNotVisibleException, NoSuchElementException
+from selenium.common.exceptions import ElementNotVisibleException, \
+                                       NoSuchElementException
 import re
+from typing import Type
+
+from autohandshake.src.Pages.Page import Page
+from autohandshake.src.exceptions import InvalidURLError
 
 
 class HandshakeSession:
     """
     A Handshake browsing session.
+
+    To be used as a context manager. Example:
+
+    with HandshakeSession("https://jhu.joinhandshake.edu", username, password) as hs:
+        [do something]
+
     """
 
     def __init__(self, login_url: str):
@@ -22,22 +33,41 @@ class HandshakeSession:
         options.add_argument('--window-size=1920,1080')
 
         if not self._login_url_str_is_valid(login_url):
-            raise ValueError('Login URL must be of the form "https://[school].joinhandshake.com"')
+            raise InvalidURLError('Login URL must be of the form '
+                             '"https://[school].joinhandshake.com"')
 
-        self.login_url = login_url
-        self.browser = webdriver.Chrome(executable_path='../chromedriver.exe',
-                                        options=options)
+        self._login_url = login_url
+        self._browser = webdriver.Chrome(executable_path='../chromedriver.exe',
+                                         options=options)
 
-    def __enter__(self):
-        self.browser.get(self.login_url)
+    def __enter__(self)->'HandshakeSession':
+        """Open a web browser and log into Handshake, beginning the session"""
+        self._browser.get(self._login_url)
         if self._school_is_invalid():
-            raise ValueError('Invalid school in login URL')
+            raise InvalidURLError('Invalid school in login URL')
+        return self
+
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.browser.quit()
+        """Close the web browser"""
+        self._browser.quit()
+
+
+    def load(self, page: Type[Page]):
+        """
+        Load the given Handshake web page using the browser
+
+        :param page: a Handshake web page
+        :type page: Page
+        :return: the HandshakeSession object
+        :rtype: HandshakeSession
+        """
+        if not issubclass(type(page), Page):
+            raise ValueError("Must pass a valid Page-type object as argument")
+        #TODO
 
     @staticmethod
-    def _login_url_str_is_valid(login_url: str):
+    def _login_url_str_is_valid(login_url: str)->bool:
         """
         Determine whether or not a given Handshake login URL is valid
 
@@ -47,13 +77,14 @@ class HandshakeSession:
         :rtype: bool
         """
         try:
-            re.match(r'^https://[a-zA-Z]+\.joinhandshake\.com', login_url) \
+            re.match(r'^https://[a-zA-Z]+\.joinhandshake\.com/?$', login_url) \
                 .group(0)
             return True
         except AttributeError:
             return False
 
-    def _school_is_invalid(self):
+
+    def _school_is_invalid(self)->bool:
         """
         Determine whether or not the current Handshake URL' school is invalid.
 
@@ -64,7 +95,7 @@ class HandshakeSession:
         :rtype: bool
         """
         try:
-            self.browser.find_element_by_xpath('//span[text()=\'Please select '
+            self._browser.find_element_by_xpath('//span[text()=\'Please select '
                                                'your school to sign in.\']')
             return True
         except NoSuchElementException:
