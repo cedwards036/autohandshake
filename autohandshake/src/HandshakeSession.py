@@ -21,32 +21,28 @@ class HandshakeSession:
 
     """
 
-    def __init__(self, home_url: str):
+    def __init__(self, login_url: str):
         """
         Initialize Handshake session.
 
-        :param home_url: a valid Handshake homepage url of the form
+        :param login_url: a valid Handshake homepage url of the form
                           "https://[school].joinhandshake.com"
-        :type home_url: str
+        :type login_url: str
         """
         options = webdriver.ChromeOptions()
         options.add_argument('--window-size=1920,1080')
 
-        if self._home_url_str_is_invalid(home_url):
+        if self._login_url_str_is_invalid(login_url):
             raise InvalidURLError('Login URL must be of the form '
                              '"https://[school].joinhandshake.com"')
 
-        # ensure url string ends with '.com' instead of '.com/'
-        if home_url[-1] == '/':
-            self._home_url = home_url[:-1]
-        else:
-            self._home_url = home_url
         self._browser = webdriver.Chrome(executable_path='../chromedriver.exe',
                                          options=options)
+        self._login_url = login_url
 
     def __enter__(self)->'HandshakeSession':
         """Open a web browser and log into Handshake, beginning the session"""
-        self._browser.get(self._home_url)
+        self._browser.get(self._login_url)
         if self._school_is_invalid():
             raise InvalidURLError('Invalid school in login URL')
         return self
@@ -54,24 +50,16 @@ class HandshakeSession:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Close the web browser"""
+        self.close()
+
+
+    def close(self):
+        """Close the Handshake Session"""
         self._browser.quit()
 
 
-    def load(self, page: Type[Page]):
-        """
-        Load the given Handshake web page using the browser
-
-        :param page: a Handshake web page
-        :type page: Page
-        :return: the HandshakeSession object
-        :rtype: HandshakeSession
-        """
-        if not issubclass(type(page), Page):
-            raise ValueError("Must pass a valid Page-type object as argument")
-        #TODO
-
     @staticmethod
-    def _home_url_str_is_invalid(login_url: str)->bool:
+    def _login_url_str_is_invalid(login_url: str)->bool:
         """
         Determine whether or not a given Handshake login URL is valid
 
@@ -81,7 +69,7 @@ class HandshakeSession:
         :rtype: bool
         """
         try:
-            re.match(r'^https://[a-zA-Z]+\.joinhandshake\.com/?$', login_url) \
+            re.match(r'^https://[a-zA-Z]+\.joinhandshake\.com', login_url) \
                 .group(0)
             return False
         except AttributeError:
