@@ -1,5 +1,6 @@
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src import HandshakeBrowser
 from autohandshake.src.exceptions import InvalidURLError
+from autohandshake.src.Pages.LoginPage import LoginPage
 
 
 class HandshakeSession:
@@ -13,7 +14,7 @@ class HandshakeSession:
 
     """
 
-    def __init__(self, login_url: str):
+    def __init__(self, login_url: str, email: str, password: str):
         """
         Initialize Handshake session.
 
@@ -22,6 +23,8 @@ class HandshakeSession:
         :type login_url: str
         """
         self._login_url = login_url
+        self._email = email
+        self._password = password
         self._browser = HandshakeBrowser()
 
 
@@ -30,6 +33,10 @@ class HandshakeSession:
         self._browser.get(self._login_url)
         if self._school_is_invalid():
             raise InvalidURLError('Invalid school in login URL')
+        # try to log in via the new style of login page if the old one fails
+        login_page = LoginPage(self._login_url, self._browser)
+        login_page.login(self._email, self._password)
+
         return self._browser
 
 

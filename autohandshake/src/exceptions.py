@@ -9,3 +9,15 @@ class WrongPageForMethodError(Exception):
 class BrowserTimeoutError(Exception):
     """Raised when a HandshakeBrowser waits too long for something to happen"""
     pass
+
+class NoSuchElementError(Exception):
+    """Raised when a HandshakeBrowser attempts to find an element that doesn't exist"""
+    pass
+
+class InvalidEmailError(Exception):
+    """Raised when attempting to log into Handshake with an invalid email"""
+    pass
+
+class InvalidPasswordError(Exception):
+    """Raised when attempting to log into Handshake with an invalid password"""
+    pass
