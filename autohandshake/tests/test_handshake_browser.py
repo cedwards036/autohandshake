@@ -1,6 +1,6 @@
 import unittest
 
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake import HandshakeBrowser
 from autohandshake.src.exceptions import InvalidURLError
 from autohandshake.src.constants import BASE_URL
 

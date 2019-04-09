@@ -1,6 +1,6 @@
 import unittest
-from autohandshake.src.Pages.LoginPage import LoginPage
-from autohandshake.src import HandshakeBrowser
+from autohandshake.src.Pages import LoginPage
+from autohandshake import HandshakeBrowser
 from autohandshake.src import InvalidURLError, InvalidEmailError, \
                               InvalidPasswordError
 

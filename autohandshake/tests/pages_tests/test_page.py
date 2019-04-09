@@ -1,7 +1,7 @@
 import unittest
 
-from autohandshake.src.Pages.Page import Page
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src.Pages import Page
+from autohandshake import HandshakeBrowser
 from autohandshake.src.constants import BASE_URL
 
 

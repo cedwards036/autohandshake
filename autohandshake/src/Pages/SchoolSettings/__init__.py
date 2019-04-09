@@ -1,0 +1,1 @@
+from autohandshake.src.Pages.SchoolSettings.AppointmentTypes import AppointmentTypesPage

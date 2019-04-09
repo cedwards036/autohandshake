@@ -1,6 +1,6 @@
 import unittest
 
-from autohandshake.src.HandshakeSession import HandshakeSession
+from autohandshake import HandshakeSession
 
 
 class TestHandshakeSession(unittest.TestCase):
