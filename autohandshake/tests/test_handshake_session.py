@@ -1,7 +1,7 @@
 import unittest
 
 from autohandshake import HandshakeSession
-from autohandshake.tests import email, password, homepage
+from autohandshake.tests import email, password, homepage, school_id
 
 
 class TestHandshakeSession(unittest.TestCase):
@@ -22,3 +22,10 @@ class TestHandshakeSession(unittest.TestCase):
                 pass
         except ValueError:
             self.fail("Unexpected ValueError given a valid login-style URL")
+
+    def test_sets_browser_school_id(self):
+        try:
+            with HandshakeSession(homepage, email, password) as browser:
+                self.assertEqual(browser.school_id, school_id)
+        except AttributeError:
+            self.fail("School ID has not been set")

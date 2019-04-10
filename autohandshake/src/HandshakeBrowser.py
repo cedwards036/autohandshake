@@ -7,7 +7,7 @@ from selenium.common.exceptions import ElementNotVisibleException, \
 import re
 import os
 
-from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError
+from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError, WrongPageForMethodError
 from autohandshake.src.constants import MAX_WAIT_TIME
 
 class HandshakeBrowser:
@@ -93,6 +93,19 @@ class HandshakeBrowser:
             self._browser.find_element_by_xpath(xpath).click()
         except NoSuchElementException:
             raise NoSuchElementError(f'No element found for xpath: "{xpath}"')
+
+
+    def record_school_id(self):
+        """Record the school's Handshake ID from a link in the main sidebar"""
+        try:
+            full_href = self._browser.find_element_by_css_selector("a[href*='/schools/'").get_attribute('href')
+            final_slash_position = full_href.rfind(r'/')
+            school_id = full_href[final_slash_position + 1:]
+            self.school_id = school_id
+        except NoSuchElementException:
+            raise WrongPageForMethodError('The main sidebar must be visible in '
+                                          'order to get the school id')
+
 
     @property
     def current_url(self):

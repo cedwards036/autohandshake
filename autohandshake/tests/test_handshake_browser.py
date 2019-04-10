@@ -1,7 +1,7 @@
 import unittest
 
 from autohandshake import HandshakeBrowser
-from autohandshake.src.exceptions import InvalidURLError
+from autohandshake.src.exceptions import InvalidURLError, WrongPageForMethodError
 from autohandshake.src.constants import BASE_URL
 
 class TestHandshakeBrowser(unittest.TestCase):
@@ -44,3 +44,9 @@ class TestHandshakeBrowser(unittest.TestCase):
         self.assertFalse(browser.element_exists_by_xpath("//div[@class='this_isnt_a_real_class']"))
 
         browser.quit()
+
+    def test_get_school_id_fails_on_invalid_page(self):
+        with self.assertRaises(WrongPageForMethodError):
+            browser = HandshakeBrowser()
+            browser.get(BASE_URL)
+            browser.record_school_id()
