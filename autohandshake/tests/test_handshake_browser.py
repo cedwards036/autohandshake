@@ -39,7 +39,7 @@ class TestHandshakeBrowser(unittest.TestCase):
         browser.get(BASE_URL)
 
         self.assertTrue(browser.element_exists_by_xpath('//div'))
-        self.assertTrue(browser.element_exists_by_xpath("//div/input[@class='login-main__email-input']"))
+        self.assertTrue(browser.element_exists_by_xpath("//a/span[@class='select2-chosen']"))
 
         self.assertFalse(browser.element_exists_by_xpath("//div[@class='this_isnt_a_real_class']"))
 
