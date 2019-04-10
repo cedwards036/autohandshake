@@ -7,7 +7,8 @@ from selenium.common.exceptions import ElementNotVisibleException, \
 import re
 import os
 
-from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError, WrongPageForMethodError
+from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError, \
+                                         WrongPageForMethodError, InsufficientPermissionsError
 from autohandshake.src.constants import MAX_WAIT_TIME
 
 class HandshakeBrowser:
@@ -31,8 +32,10 @@ class HandshakeBrowser:
                     "https://[...].joinhandshake.com[/...]"
         :type url: str
         """
-        self._validate_url(url)
+        self._validate_url_str(url)
         self._browser.get(url)
+        self._validate_page_exists()
+        self._validate_permissions()
 
 
     def quit(self):
@@ -113,7 +116,7 @@ class HandshakeBrowser:
         return self._browser.current_url
 
     @staticmethod
-    def _validate_url(url: str):
+    def _validate_url_str(url: str):
         """
         Determine whether or not a given Handshake URL is valid
 
@@ -127,3 +130,15 @@ class HandshakeBrowser:
             raise InvalidURLError('URL must be of the form '
                              '"https://app.joinhandshake.com[/...]" or '
                              '"https://[school name].joinhandshake.com[/...]"')
+
+
+    def _validate_page_exists(self):
+        """Determine whether the current page exists or gave a 404 error."""
+        if self.element_exists_by_xpath("//p[contains(text(), 'You may want to head back to the homepage.')]"):
+            raise InvalidURLError
+
+
+    def _validate_permissions(self):
+        """Determine whether or not the logged in user has permission to view the current page"""
+        if self.element_exists_by_xpath("//div[contains(text(), 'You do not have permission to do that.')]"):
+            raise InsufficientPermissionsError

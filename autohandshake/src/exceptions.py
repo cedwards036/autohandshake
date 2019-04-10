@@ -21,3 +21,7 @@ class InvalidEmailError(Exception):
 class InvalidPasswordError(Exception):
     """Raised when attempting to log into Handshake with an invalid password"""
     pass
+
+class InsufficientPermissionsError(Exception):
+    """Raised when HandshakeBrowser attempts to access a page for which the user has insufficient permissions"""
+    pass
