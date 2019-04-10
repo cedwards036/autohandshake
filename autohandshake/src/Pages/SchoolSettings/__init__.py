@@ -1,1 +1,2 @@
-from autohandshake.src.Pages.SchoolSettings.AppointmentTypes import AppointmentTypesPage
+from autohandshake.src.Pages.SchoolSettings.AppointmentTypesListPage import AppointmentTypesListPage
+from autohandshake.src.Pages.SchoolSettings.AppointmentTypePage import AppointmentTypePage

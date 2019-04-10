@@ -3,13 +3,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotVisibleException, \
-                                       NoSuchElementException
+    NoSuchElementException, TimeoutException
 import re
 import os
 
 from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError, \
-                                         WrongPageForMethodError, InsufficientPermissionsError
+    WrongPageForMethodError, InsufficientPermissionsError
 from autohandshake.src.constants import MAX_WAIT_TIME
+
 
 class HandshakeBrowser:
     """An automated browser for navigating Handshake"""
@@ -24,7 +25,6 @@ class HandshakeBrowser:
         self._browser = webdriver.Chrome(executable_path=driver_path,
                                          options=options)
 
-
     def get(self, url: str):
         """Go to the web page specified by the given Handshake url.
 
@@ -37,13 +37,11 @@ class HandshakeBrowser:
         self._validate_page_exists()
         self._validate_permissions()
 
-
     def quit(self):
         """Close the browser"""
         self._browser.quit()
 
-
-    def element_exists_by_xpath(self, xpath: str)->bool:
+    def element_exists_by_xpath(self, xpath: str) -> bool:
         """
         Determine whether or not an element with the given xpath exists in the page.
 
@@ -58,7 +56,6 @@ class HandshakeBrowser:
         except NoSuchElementException:
             return False
 
-
     def wait_until_element_exists_by_xpath(self, xpath: str):
         """
         Wait until an element with the given xpath exists on the page.
@@ -66,9 +63,11 @@ class HandshakeBrowser:
         :param xpath: the xpath of the element to wait for
         :type xpath: str
         """
-        WebDriverWait(self._browser, MAX_WAIT_TIME).until(
-            EC.visibility_of_element_located((By.XPATH, xpath)))
-
+        try:
+            WebDriverWait(self._browser, MAX_WAIT_TIME).until(
+                EC.visibility_of_element_located((By.XPATH, xpath)))
+        except TimeoutException:
+            raise TimeoutError(f"Element with xpath {xpath} did not appear")
 
     def send_text_to_element_by_xpath(self, text: str, xpath: str):
         """
@@ -84,7 +83,6 @@ class HandshakeBrowser:
         except NoSuchElementException:
             raise NoSuchElementError(f'No element found for xpath: "{xpath}"')
 
-
     def click_element_by_xpath(self, xpath):
         """
         Click an element on the page given its xpath
@@ -97,18 +95,67 @@ class HandshakeBrowser:
         except NoSuchElementException:
             raise NoSuchElementError(f'No element found for xpath: "{xpath}"')
 
+    def get_element_attribute_by_xpath(self, xpath: str, attribute: str) -> str:
+        """
+        Get the value of the given attribute from the element with the given xpath
+
+        :param xpath: the xpath of the element of interest
+        :type xpath: str
+        :param attribute: the name of the attribute of interest, e.g. 'value'
+        :type attribute: str
+        :return: the value of the attribute on the element of interest
+        :rtype: str
+        """
+        try:
+            if attribute.lower() == 'text':
+                return self._browser.find_element_by_xpath(xpath).text
+            return self._browser.find_element_by_xpath(xpath).get_attribute(attribute)
+        except NoSuchElementException:
+            raise NoSuchElementError(f'No element found for xpath: "{xpath}"')
+
+    def get_elements_attribute_by_xpath(self, xpath: str, attribute: str) -> list:
+        """
+        Get the value of a given attribute for all elements with the given xpath
+
+        :param xpath: the xpath of the elements of interest
+        :type xpath: str
+        :param attribute: the name of the attribute of interest, e.g. 'value'
+        :type attribute: str
+        :return: a list of values of the given attribute for each matching element
+        :rtype: list
+        """
+        try:
+            elements = self._browser.find_elements_by_xpath(xpath)
+            if attribute.lower() == 'text':
+                return [element.text for element in elements]
+            return [element.get_attribute(attribute) for element in elements]
+        except NoSuchElementException:
+            raise NoSuchElementError(f'No elements found for xpath: "{xpath}"')
+
+    def element_is_selected_by_xpath(self, xpath: str) -> bool:
+        """Get whether or not the element specified by the given xpath is selected
+
+        :param xpath: the xpath of the elements of interest
+        :type xpath: str
+        :return: True if the element is selected, False otherwise
+        :rtype: bool
+        """
+        try:
+            return self._browser.find_element_by_xpath(xpath).is_selected()
+        except:
+            raise NoSuchElementError(f'No elements found for xpath: "{xpath}"')
 
     def record_school_id(self):
         """Record the school's Handshake ID from a link in the main sidebar"""
         try:
-            full_href = self._browser.find_element_by_css_selector("a[href*='/schools/'").get_attribute('href')
+            full_href = self._browser.find_element_by_css_selector(
+                "a[href*='/schools/'").get_attribute('href')
             final_slash_position = full_href.rfind(r'/')
             school_id = full_href[final_slash_position + 1:]
             self.school_id = school_id
         except NoSuchElementException:
             raise WrongPageForMethodError('The main sidebar must be visible in '
                                           'order to get the school id')
-
 
     @property
     def current_url(self):
@@ -128,17 +175,17 @@ class HandshakeBrowser:
                 .group(0)
         except AttributeError:
             raise InvalidURLError('URL must be of the form '
-                             '"https://app.joinhandshake.com[/...]" or '
-                             '"https://[school name].joinhandshake.com[/...]"')
-
+                                  '"https://app.joinhandshake.com[/...]" or '
+                                  '"https://[school name].joinhandshake.com[/...]"')
 
     def _validate_page_exists(self):
         """Determine whether the current page exists or gave a 404 error."""
-        if self.element_exists_by_xpath("//p[contains(text(), 'You may want to head back to the homepage.')]"):
+        if self.element_exists_by_xpath("//p[contains(text(), 'You may want "
+                                        "to head back to the homepage.')]"):
             raise InvalidURLError
-
 
     def _validate_permissions(self):
         """Determine whether or not the logged in user has permission to view the current page"""
-        if self.element_exists_by_xpath("//div[contains(text(), 'You do not have permission to do that.')]"):
+        if self.element_exists_by_xpath("//div[contains(text(), 'You do not "
+                                        "have permission to do that.')]"):
             raise InsufficientPermissionsError
