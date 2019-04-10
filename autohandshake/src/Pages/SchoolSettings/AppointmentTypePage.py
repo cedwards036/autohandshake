@@ -29,8 +29,7 @@ class AppointmentTypePage(Page):
             "//*[@id='appointment_type_name']", "value")
         settings['description'] = self._browser.get_element_attribute_by_xpath(
             "//*[@id='appointment_type_description']", "value")
-        settings['length'] = int(self._browser.get_element_attribute_by_xpath(
-            "//*[@id='appointment_type_length']", "value"))
+        settings['length'] = self._parse_length()
         settings['categories'] = self._parse_multi_option_appt_type_field(
             's2id_appointment_type_appointment_category_ids')
         settings['drop_in_enabled'] = self._browser.element_is_selected_by_xpath(
@@ -52,8 +51,7 @@ class AppointmentTypePage(Page):
         settings['school_years'] = self._parse_school_year_requirements()
         settings['cum_gpa_required'] = self._browser.element_is_selected_by_xpath(
             "//*[@id='student_screen_cumulative_gpa_required']")
-        settings['cum_gpa'] = float(self._browser.get_element_attribute_by_xpath(
-            "//*[@id='student_screen_cumulative_gpa']", "value"))
+        settings['cum_gpa'] = self._parse_gpa()
         settings['major_groups'] = self._parse_major_group_qualifications()
         settings['colleges'] = self._parse_multi_option_appt_type_field(
             's2id_student_screen_college_ids')
@@ -79,7 +77,7 @@ class AppointmentTypePage(Page):
         """Wait until the page has finished loading."""
         self._browser.wait_until_element_exists_by_xpath("//input[@id='appointment_type_name']")
 
-    def _parse_multi_option_appt_type_field(self, parent_div_id: str) -> list:
+    def _parse_multi_option_appt_type_field(self, parent_div_id: str) -> Optional[list]:
         """
         Extract all selected values from a multi-value text field.
 
@@ -88,9 +86,12 @@ class AppointmentTypePage(Page):
         :return: a list of all selected values in the field
         :rtype: list
         """
-        return self._browser.get_elements_attribute_by_xpath(
+        values = self._browser.get_elements_attribute_by_xpath(
             f"//*[@id='{parent_div_id}']//*[@class='select2-search-choice']//div",
             "text")
+        if values:
+            return values
+        return None
 
     def _parse_survey_drop_down(self, parent_div_id: str) -> Optional[str]:
         """
@@ -154,3 +155,18 @@ class AppointmentTypePage(Page):
         if not major_qualifications:
             return None
         return major_qualifications
+
+    def _parse_gpa(self) -> Optional[float]:
+        """Get the required GPA of a type, if any"""
+        gpa = self._browser.get_element_attribute_by_xpath(
+            "//*[@id='student_screen_cumulative_gpa']", "value")
+        if gpa:
+            return float(gpa)
+        return None
+
+    def _parse_length(self) -> Optional[int]:
+        length = self._browser.get_element_attribute_by_xpath(
+            "//*[@id='appointment_type_length']", "value")
+        if length:
+            return int(length)
+        return None
