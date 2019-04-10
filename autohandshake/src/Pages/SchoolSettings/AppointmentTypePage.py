@@ -66,7 +66,7 @@ class AppointmentTypePage(Page):
 
     def validate_url(self, url):
         """
-        Ensure that the given URL is a valid login URL.
+        Ensure that the given URL is a valid URL.
 
         Since the URL is not entered by the user, it is always valid.
 
