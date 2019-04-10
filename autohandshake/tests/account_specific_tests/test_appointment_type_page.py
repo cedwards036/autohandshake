@@ -4,10 +4,10 @@ from autohandshake.tests import TestSession
 
 TEST_TYPE_ID = 16097
 
+
 class TestAppointmentTypePage(unittest.TestCase):
 
     def test_get_appt_settings(self):
-
         expected_settings = {
             'id': TEST_TYPE_ID,
             'name': 'Homewood: TEST appointment type',

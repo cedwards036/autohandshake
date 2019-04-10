@@ -27,8 +27,7 @@ class HandshakeSession:
         self._password = password
         self._browser = HandshakeBrowser()
 
-
-    def __enter__(self)->HandshakeBrowser:
+    def __enter__(self) -> HandshakeBrowser:
         """Open a web browser and log into Handshake, beginning the session"""
         self._browser.get(self._login_url)
         if self._school_is_invalid():
@@ -39,11 +38,9 @@ class HandshakeSession:
         self._browser.record_school_id()
         return self._browser
 
-
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Close the web browser"""
         self.close()
-
 
     def close(self):
         """Close the Handshake Session.
@@ -52,8 +49,7 @@ class HandshakeSession:
         """
         self._browser.quit()
 
-
-    def _school_is_invalid(self)->bool:
+    def _school_is_invalid(self) -> bool:
         """
         Determine whether or not the Handshake login URL's school is invalid.
 
@@ -67,5 +63,5 @@ class HandshakeSession:
                                                      'select your school to '
                                                      'sign in.\']')
 
-    def _get_school_id(self)->int:
+    def _get_school_id(self) -> int:
         """Once on the homepage after logging in, get the id of the school."""

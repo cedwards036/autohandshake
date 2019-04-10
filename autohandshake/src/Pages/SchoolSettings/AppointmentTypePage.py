@@ -134,7 +134,7 @@ class AppointmentTypePage(Page):
             return None
         return school_years_required
 
-    def _parse_major_group_qualifications(self)->Optional[list]:
+    def _parse_major_group_qualifications(self) -> Optional[list]:
         """
         Extract the selected major groups and majors from the requirements page.
 

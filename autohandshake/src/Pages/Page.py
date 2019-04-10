@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from autohandshake.src.HandshakeBrowser import HandshakeBrowser
 from autohandshake.src.exceptions import InvalidURLError, WrongPageForMethodError
 
+
 class Page(ABC):
     """
     A single web page on the Handshake site
@@ -24,13 +25,12 @@ class Page(ABC):
 
     @abstractmethod
     def wait_until_page_is_loaded(self):
-        """Determine whether or not the page has fully loaded.
+        """Wait until the page has finished loading.
 
         For pages without complex javascript involved in the load, simply
-        returning True is sufficient.
+        returning immediately is sufficient.
         """
         raise NotImplementedError
-
 
     def validate_current_page(self):
         """Ensure that the browser is on the correct page before calling a method.
@@ -44,7 +44,6 @@ class Page(ABC):
         except InvalidURLError:
             raise WrongPageForMethodError()
 
-
     @abstractmethod
     def validate_url(self, url):
         """
@@ -54,7 +53,6 @@ class Page(ABC):
         :type url: str
         """
         raise NotImplementedError
-
 
     @property
     def url(self):

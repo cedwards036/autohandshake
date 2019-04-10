@@ -2,9 +2,10 @@ import unittest
 
 from autohandshake import HandshakeBrowser
 from autohandshake.src.exceptions import InvalidURLError, WrongPageForMethodError, \
-                                         InsufficientPermissionsError
+    InsufficientPermissionsError
 from autohandshake.src.constants import BASE_URL
 from autohandshake.tests import TestSession
+
 
 class TestHandshakeBrowser(unittest.TestCase):
 
@@ -13,7 +14,6 @@ class TestHandshakeBrowser(unittest.TestCase):
         invalid_url = "https://jhu.joinhandhake.com/"
         not_a_url = "hello world"
         no_https = "jhu.joinhandshake.com"
-
 
         with self.assertRaises(InvalidURLError):
             browser = HandshakeBrowser()
@@ -35,18 +35,15 @@ class TestHandshakeBrowser(unittest.TestCase):
             browser.get(no_https)
             browser.quit()
 
-
     def test_throws_error_for_insufficient_permissions(self):
         with self.assertRaises(InsufficientPermissionsError):
             with TestSession() as browser:
                 browser.get(f'{BASE_URL}/schools/{int(browser.school_id) - 1}/edit')
 
-
     def test_throws_error_for_invalid_url_while_logged_in(self):
         with self.assertRaises(InvalidURLError):
             with TestSession() as browser:
                 browser.get(f'{BASE_URL}/schools/abcdefg/edit')
-
 
     def test_element_exists_by_xpath(self):
         # tests valid as of 4/8/19

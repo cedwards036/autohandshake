@@ -3,7 +3,8 @@ from autohandshake.src.Pages import LoginPage
 from autohandshake.tests import email, password, homepage
 from autohandshake import HandshakeBrowser
 from autohandshake.src import InvalidURLError, InvalidEmailError, \
-                              InvalidPasswordError
+    InvalidPasswordError
+
 
 class TestLoginPage(unittest.TestCase):
 

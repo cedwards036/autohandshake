@@ -1,8 +1,9 @@
 from autohandshake.src.Pages.Page import Page
 from autohandshake.src.HandshakeBrowser import HandshakeBrowser
 from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError, \
-                                         InvalidEmailError, InvalidPasswordError
+    InvalidEmailError, InvalidPasswordError
 import re
+
 
 class LoginPage(Page):
     """
@@ -36,11 +37,10 @@ class LoginPage(Page):
         :type url: str
         """
         try:
-            re.match(r'^https://[a-zA-Z]+\.joinhandshake\.com(/login)?$', url)\
+            re.match(r'^https://[a-zA-Z]+\.joinhandshake\.com(/login)?$', url) \
                 .group(0)
         except AttributeError:
             raise InvalidURLError()
-
 
     def validate_url_school(self):
         """Ensure that the current URL leads to a valid school's login page"""
@@ -48,7 +48,6 @@ class LoginPage(Page):
                                                  'select your school to '
                                                  'sign in.\']'):
             raise InvalidURLError("The school specified in the URL is not valid")
-
 
     def login(self, email, password):
         """
@@ -67,7 +66,7 @@ class LoginPage(Page):
         """Enter email address into input field"""
         EMAIL_INPUT_XPATH = "//input[@name='identifier']"
 
-        try: # if you get the old login page
+        try:  # if you get the old login page
             EMAIL_LINK_XPATH = "//div[@class='sign-with-email-address']//a"
             self._browser.click_element_by_xpath(EMAIL_LINK_XPATH)
             self._browser.send_text_to_element_by_xpath(email, EMAIL_INPUT_XPATH)
@@ -76,7 +75,7 @@ class LoginPage(Page):
             if self._browser.element_exists_by_xpath("//div[text()='Please enter a valid email address']"):
                 raise InvalidEmailError(f"No account found for email {email}")
 
-        except NoSuchElementError: # if you get the new login page
+        except NoSuchElementError:  # if you get the new login page
             EMAIL_LINK_XPATH = "//div[@class='sign-in-with-email-address']//a"
             self._browser.click_element_by_xpath(EMAIL_LINK_XPATH)
             self._browser.send_text_to_element_by_xpath(email, EMAIL_INPUT_XPATH)
@@ -87,14 +86,14 @@ class LoginPage(Page):
 
     def _enter_password(self, password):
         """Enter password into input field after having successfully entered email"""
-        try: # if you get the old login page
+        try:  # if you get the old login page
             self._browser.click_element_by_xpath("//a[@class='no-underline']")
             self._browser.send_text_to_element_by_xpath(password, "//input[@name='password']")
             self._browser.click_element_by_xpath("//input[@name='commit']")
             if self._browser.element_exists_by_xpath("//div[contains(text(), "
                                                      "'You entered an invalid password.')]"):
                 raise InvalidPasswordError("Invalid password")
-        except NoSuchElementError: # if you get the new login page
+        except NoSuchElementError:  # if you get the new login page
             self._browser.click_element_by_xpath("//a[@class='alternate-login-link']")
             self._browser.send_text_to_element_by_xpath(password, "//input[@name='password']")
             self._browser.click_element_by_xpath("//button")
