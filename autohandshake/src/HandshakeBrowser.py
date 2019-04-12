@@ -145,6 +145,13 @@ class HandshakeBrowser:
         except:
             raise NoSuchElementError(f'No elements found for xpath: "{xpath}"')
 
+    def switch_to_frame_by_xpath(self, xpath):
+        try:
+            frame = self._browser.find_element_by_xpath(xpath)
+            self._browser.switch_to.frame(frame)
+        except NoSuchElementException:
+            raise NoSuchElementError(f'No elements found for xpath: "{xpath}"')
+
     def record_school_id(self):
         """Record the school's Handshake ID from a link in the main sidebar"""
         try:
