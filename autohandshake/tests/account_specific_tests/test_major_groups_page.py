@@ -1,5 +1,5 @@
 import unittest
-from autohandshake.src.Pages.SchoolSettings import MajorSettingsPage
+from autohandshake.src.Pages import MajorSettingsPage
 from autohandshake.tests import TestSession
 
 

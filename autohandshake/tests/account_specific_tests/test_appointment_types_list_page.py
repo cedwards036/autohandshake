@@ -1,5 +1,5 @@
 import unittest
-from autohandshake.src.Pages.SchoolSettings import AppointmentTypesListPage
+from autohandshake.src.Pages import AppointmentTypesListPage
 from autohandshake.tests import TestSession
 
 
@@ -32,7 +32,7 @@ class TestAppointmentTypesListPage(unittest.TestCase):
                 'cum_gpa': None,
                 'major_groups': None,
                 'colleges': None,
-                'labels': ['system gen: cbs', 'temp label: dual degree cbs', 'system gen: dual degree cbs'],
+                'labels': ['system gen: cbs', 'system gen: dual degree cbs', 'temp label: dual degree cbs'],
                 'career_clusters': None
             },
             {
@@ -77,4 +77,4 @@ career@jhu.edu\n""",
         with TestSession() as browser:
             types_page = AppointmentTypesListPage(browser)
             type_settings = types_page.get_type_settings(how_many=2)
-            self.assertEqual(expected, type_settings)
+            self.assertListEqual(expected, type_settings)

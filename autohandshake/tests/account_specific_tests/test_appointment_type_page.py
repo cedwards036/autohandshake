@@ -1,5 +1,5 @@
 import unittest
-from autohandshake.src.Pages.SchoolSettings import AppointmentTypePage
+from autohandshake.src.Pages import AppointmentTypePage
 from autohandshake.tests import TestSession
 
 TEST_TYPE_ID = 16097
@@ -27,7 +27,7 @@ class TestAppointmentTypePage(unittest.TestCase):
                              'major_group: Individual Studies', 'indv_major: Applied Economics',
                              'indv_major: Applied Biomedical Engineering',
                              'indv_major: Applied and Computational Mathematics'],
-            'colleges': ['Krieger School of Arts & Sciences', 'Whiting School of Engineering'],
+            'colleges': ['Whiting School of Engineering', 'Krieger School of Arts & Sciences'],
             'labels': ['shared: appointments allowed', 'hwd: old appointment type'],
             'career_clusters': ['Homewood: STEM & Innovation', 'Carey Network: Finance']
         }
