@@ -24,41 +24,33 @@ class FileType(Enum):
     CSV = 'csv'
 
 
-class InsightsPage(Page):
-    """The overview settings page listing all appointment types"""
+class _DownloadModal:
+    """An interface to the pop-up modal for downloading Insights files"""
 
-    def __init__(self, url_string: str, browser: HandshakeBrowser):
+    def __init__(self, browser: HandshakeBrowser):
         """
-        Load the insights page specified by either the full URL or the query string
+        Open the download modal on the Insights page
 
-        :param url_string: either a full insights URL or just the alphanumeric
-                           query string specifying the exact report
-        :type url_string: str
-        :param browser: a logged-in HandshakeBrowser
+        :param browser: a logged-in HandshakeBrowser on the Insights Page
         :type browser: HandshakeBrowser
         """
-        super().__init__(url_string, browser)
-        if self._browser.element_exists_by_xpath(
-                "//span[text()='Select some dimensions or measures.' and @aria-hidden='false']"):
-            raise InvalidURLError('Insights URL has no dimensions or measures selected')
-        self.download_modal_is_open = False
+        self._browser = browser
+        self.is_open = False
 
-    ############################
-    # DOWNLOAD MODAL METHODS
-    ############################
-
-    def open_download_modal(self):
+    def open(self):
         """Open the insights report download modal box."""
-        self._browser.click_element_by_xpath("//i[@class='lk-icon-gear']")
-        self._browser.click_element_by_xpath("//a[@ng-click='openDownloadDialog()']")
-        self._browser.wait_until_element_is_clickable_by_xpath("//div[contains(@class, 'query-download-modal-limit')]")
-        # click modal body to bring it into focus, allowing additional actions
-        self._browser.click_element_by_xpath("//div[@class='modal-body']")
-        self.download_modal_is_open = True
+        if not self.is_open:
+            self._browser.click_element_by_xpath("//i[@class='lk-icon-gear']")
+            self._browser.click_element_by_xpath("//a[@ng-click='openDownloadDialog()']")
+            self._browser.wait_until_element_is_clickable_by_xpath(
+                "//div[contains(@class, 'query-download-modal-limit')]")
+            # click modal body to bring it into focus, allowing additional actions
+            self._browser.click_element_by_xpath("//div[@class='modal-body']")
+            self.is_open = True
 
     def validate_download_modal_is_open(self):
         """Throw an error if the download modal is not open."""
-        if not self.download_modal_is_open:
+        if not self.is_open:
             raise NoSuchElementError('Insights Download modal box must be open')
 
     def get_download_file_type(self) -> FileType:
@@ -131,6 +123,7 @@ class InsightsPage(Page):
         custom_limit_value_xpath = "//input[@name='customExportLimit']"
         self._browser.wait_until_element_is_clickable_by_xpath(custom_limit_radio_xpath)
         self._browser.click_element_by_xpath(custom_limit_radio_xpath)
+        self._browser.wait_until_element_is_clickable_by_xpath(custom_limit_value_xpath)
         self._browser.send_text_to_element_by_xpath(custom_limit_value_xpath, str(limit))
 
     def get_file_name(self) -> str:
@@ -181,7 +174,7 @@ class InsightsPage(Page):
         file_path = os.path.join(download_dir, file_name)
         self._browser.click_element_by_xpath("//button[@id='qr-export-modal-download']")
         self._confirm_file_downloaded(file_path, max_wait_time)
-        self.download_modal_is_open = False
+        self.is_open = False
         return file_path
 
     def click_open_in_browser(self) -> List[dict]:
@@ -201,8 +194,51 @@ class InsightsPage(Page):
         self._browser.wait_until_element_exists_by_xpath("//pre")
         raw_text = self._browser.get_element_attribute_by_xpath("//pre", "text")
         self._browser.return_to_main_tab()
-        self.download_modal_is_open = False
+        self.is_open = False
         return json.loads(raw_text)
+
+    @staticmethod
+    def _confirm_file_downloaded(file_path, wait_time):
+        """
+        Confirm that the file at the given file path has downloaded successfully.
+
+        Throw an error if the file still does not exists when the given wait time
+        is up
+
+        :param file_path: the expected file path of the downloading file
+        :type file_path: str
+        :param wait_time: the maximum time to wait for the file to download
+        :type wait_time: integer
+        """
+        start_time = time.time()
+        time_to_stop = start_time + wait_time
+        while time.time() <= time_to_stop:
+            time.sleep(0.5)
+            if os.path.exists(file_path):
+                return
+
+        raise RuntimeError('File did not download in time')
+
+
+class InsightsPage(Page):
+    """The overview settings page listing all appointment types"""
+
+    def __init__(self, url_string: str, browser: HandshakeBrowser):
+        """
+        Load the insights page specified by either the full URL or the query string
+
+        :param url_string: either a full insights URL or just the alphanumeric
+                           query string specifying the exact report
+        :type url_string: str
+        :param browser: a logged-in HandshakeBrowser
+        :type browser: HandshakeBrowser
+        """
+        super().__init__(url_string, browser)
+        if self._browser.element_exists_by_xpath(
+                "//span[text()='Select some dimensions or measures.' and @aria-hidden='false']"):
+            raise InvalidURLError('Insights URL has no dimensions or measures selected')
+        self.modal = _DownloadModal(self._browser)
+
 
     ##################
     # HELPER METHODS
@@ -246,23 +282,4 @@ class InsightsPage(Page):
 
             self._browser.wait_until_element_exists_by_xpath(exists_once_iframe_in_focus)
 
-    def _confirm_file_downloaded(self, file_path, wait_time):
-        """
-        Confirm that the file at the given file path has downloaded successfully.
 
-        Throw an error if the file still does not exists when the given wait time
-        is up
-
-        :param file_path: the expected file path of the downloading file
-        :type file_path: str
-        :param wait_time: the maximum time to wait for the file to download
-        :type wait_time: integer
-        """
-        start_time = time.time()
-        time_to_stop = start_time + wait_time
-        while time.time() <= time_to_stop:
-            time.sleep(0.5)
-            if os.path.exists(file_path):
-                return
-
-        raise RuntimeError('File did not download in time')
