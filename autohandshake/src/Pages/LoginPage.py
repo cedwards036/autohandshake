@@ -69,7 +69,7 @@ class LoginPage(Page):
         try:  # if you get the old login page
             EMAIL_LINK_XPATH = "//div[@class='sign-with-email-address']//a"
             self._browser.click_element_by_xpath(EMAIL_LINK_XPATH)
-            self._browser.send_text_to_element_by_xpath(email, EMAIL_INPUT_XPATH)
+            self._browser.send_text_to_element_by_xpath(EMAIL_INPUT_XPATH, email)
             EMAIL_BTN_XPATH = "//div[@class='login-main__email-box']/button"
             self._browser.click_element_by_xpath(EMAIL_BTN_XPATH)
             if self._browser.element_exists_by_xpath("//div[text()='Please enter a valid email address']"):
@@ -78,7 +78,7 @@ class LoginPage(Page):
         except NoSuchElementError:  # if you get the new login page
             EMAIL_LINK_XPATH = "//div[@class='sign-in-with-email-address']//a"
             self._browser.click_element_by_xpath(EMAIL_LINK_XPATH)
-            self._browser.send_text_to_element_by_xpath(email, EMAIL_INPUT_XPATH)
+            self._browser.send_text_to_element_by_xpath(EMAIL_INPUT_XPATH, email)
             EMAIL_BTN_XPATH = "//div[@class='actions']/button"
             self._browser.click_element_by_xpath(EMAIL_BTN_XPATH)
             if 'known_error_message_present=true' in self._browser.current_url:
@@ -88,14 +88,14 @@ class LoginPage(Page):
         """Enter password into input field after having successfully entered email"""
         try:  # if you get the old login page
             self._browser.click_element_by_xpath("//a[@class='no-underline']")
-            self._browser.send_text_to_element_by_xpath(password, "//input[@name='password']")
+            self._browser.send_text_to_element_by_xpath("//input[@name='password']", password)
             self._browser.click_element_by_xpath("//input[@name='commit']")
             if self._browser.element_exists_by_xpath("//div[contains(text(), "
                                                      "'You entered an invalid password.')]"):
                 raise InvalidPasswordError("Invalid password")
         except NoSuchElementError:  # if you get the new login page
             self._browser.click_element_by_xpath("//a[@class='alternate-login-link']")
-            self._browser.send_text_to_element_by_xpath(password, "//input[@name='password']")
+            self._browser.send_text_to_element_by_xpath("//input[@name='password']", password)
             self._browser.click_element_by_xpath("//button")
             if self._browser.element_exists_by_xpath("//div[contains(text(), "
                                                      "'You entered an invalid password.')]"):

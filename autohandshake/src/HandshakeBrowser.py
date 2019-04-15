@@ -69,7 +69,20 @@ class HandshakeBrowser:
         except TimeoutException:
             raise TimeoutError(f"Element with xpath {xpath} did not appear")
 
-    def send_text_to_element_by_xpath(self, text: str, xpath: str):
+    def wait_until_element_is_clickable_by_xpath(self, xpath: str):
+        """
+        Wait until an element with the given xpath is clickable.
+
+        :param xpath: the xpath of the element to wait for
+        :type xpath: str
+        """
+        try:
+            WebDriverWait(self._browser, MAX_WAIT_TIME).until(
+                EC.element_to_be_clickable((By.XPATH, xpath)))
+        except TimeoutException:
+            raise TimeoutError(f"Element with xpath {xpath} did not become clickable")
+
+    def send_text_to_element_by_xpath(self, xpath: str, text: str, clear: bool = True):
         """
         Send a string to an input field identified by the given xpath
 
@@ -77,9 +90,15 @@ class HandshakeBrowser:
         :type text: str
         :param xpath: the xpath of the input field to which to send the text
         :type xpath: str
+        :param clear: whether or not to clear the field before sending text. If
+                      False, text will be appended to any text already present.
+        :type clear: bool
         """
         try:
-            self._browser.find_element_by_xpath(xpath).send_keys(text)
+            element = self._browser.find_element_by_xpath(xpath)
+            if clear:
+                element.clear()
+            element.send_keys(text)
         except NoSuchElementException:
             raise NoSuchElementError(f'No element found for xpath: "{xpath}"')
 
