@@ -152,6 +152,7 @@ class _DownloadModal:
         if not file_name:
             raise ValueError('File name cannot be null or ""')
         self._browser.wait_until_element_exists_by_xpath(file_name_xpath)
+        file_name = self.ensure_file_name_has_correct_extension(file_name)
         self._browser.send_text_to_element_by_xpath(file_name_xpath, file_name)
 
     def click_download_button(self, download_dir: str, max_wait_time: int = DEFAULT_WAIT_TIME) -> str:
@@ -161,7 +162,8 @@ class _DownloadModal:
         :param download_dir: the directory into which Insights will download the
                              file. This is used to confirm that the file
                              downloaded successfully, *not* to tell Insights
-                             where to download the file
+                             where to download the file (Insights has no power
+                             over that).
         :type download_dir: str
         :param max_wait_time: the maximum amount of time to wait for the file to
                               download without throwing an error
@@ -219,6 +221,13 @@ class _DownloadModal:
 
         raise RuntimeError('File did not download in time')
 
+    def ensure_file_name_has_correct_extension(self, file_name) -> str:
+        """Make sure the file name has the correct extension for the selected file type"""
+        file_type = self.get_download_file_type()
+        if file_name[(-1) * len(str(file_type.value)):] != file_type.value:
+            file_name = file_name + '.' + file_type.value
+        return file_name
+
 
 class InsightsPage(Page):
     """The overview settings page listing all appointment types"""
@@ -239,10 +248,53 @@ class InsightsPage(Page):
             raise InvalidURLError('Insights URL has no dimensions or measures selected')
         self.modal = _DownloadModal(self._browser)
 
+    def get_data(self) -> List[dict]:
+        """Get a JSON-like list of dict representation of the Insights report's data
 
-    ##################
-    # HELPER METHODS
-    ##################
+        :returns: the Insight report's data in list-of-dict/JSON-like format
+        :rtype: list
+        """
+        self.modal.open()
+        self.modal.set_download_file_type(FileType.JSON)
+        try:
+            self.modal.set_limit_to_all_results(remove_sorts=True)
+        except InsufficientPermissionsError:
+            pass
+            # keep limit at "Results in Table" if "All Results" is not available
+        return self.modal.click_open_in_browser()
+
+    def download_file(self, download_dir: str, file_name: str = None, file_type: FileType = FileType.CSV,
+                      max_wait_time: int = DEFAULT_WAIT_TIME) -> str:
+        """Download the Insights report's data in a file of the specified type
+
+        :param file_type: the type of file to download
+        :type file_type: FileType
+        :param download_dir: the directory into which Insights will download the
+                             file. This is used to confirm that the file
+                             downloaded successfully, *not* to tell Insights
+                             where to download the file (Insights has no power
+                             over that).
+        :type download_dir: str
+        :param file_name: the name of the file to download. If None, default to
+                          Handshake's standard naming of Insights files
+        :type file_name: str
+        :param max_wait_time: the maximum amount of time to wait for the file to
+                              download without throwing an error
+        :type max_wait_time: int
+        :returns: the filepath of the newly-downloaded file
+        :rtype: str
+        """
+        self.modal.open()
+        self.modal.set_download_file_type(file_type)
+        if file_name:
+            self.modal.set_file_name(file_name)
+        try:
+            self.modal.set_limit_to_all_results(remove_sorts=True)
+        except InsufficientPermissionsError:
+            pass
+            # keep limit at "Results in Table" if "All Results" is not available
+        return self.modal.click_download_button(download_dir, max_wait_time)
+
 
     def validate_url(self, url):
         """
