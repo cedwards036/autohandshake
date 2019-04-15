@@ -1,7 +1,8 @@
 import unittest
-from autohandshake.src.Pages import InsightsPage
-from autohandshake.tests import TestSession
+from autohandshake.src.Pages import InsightsPage, FileType
+from autohandshake.tests import TestSession, download_dir
 from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError
+import os
 
 
 class TestInsightsPage(unittest.TestCase):
@@ -37,27 +38,31 @@ class TestInsightsPage(unittest.TestCase):
         with TestSession() as browser:
             insights = InsightsPage(valid_query, browser)
             with self.assertRaises(NoSuchElementError):
-                insights.select_download_file_type('excel')
+                insights.set_download_file_type('excel')
 
     def test_no_error_is_thrown_selecting_valid_download_file_type(self):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPXRoRnM0QnUyV2JKTHhQMDZ1dUpBT0QmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
         with TestSession() as browser:
             insights = InsightsPage(valid_query, browser)
-            insights.open_download_dialogue()
-            insights.select_download_file_type('txt')
-            insights.select_download_file_type('csv')
-            insights.select_download_file_type('json')
-            insights.select_download_file_type('Tab-SeparaTED    ')
-            insights.select_download_file_type('   HTML   ')
-            insights.select_download_file_type('Markdown')
-            insights.select_download_file_type('text')
-            insights.select_download_file_type('Png')
+            insights.open_download_modal()
+            insights.set_download_file_type(FileType.TXT)
+            self.assertEqual(FileType.TXT, insights.get_download_file_type())
+            insights.set_download_file_type(FileType.CSV)
+            self.assertEqual(FileType.CSV, insights.get_download_file_type())
+            insights.set_download_file_type(FileType.JSON)
+            self.assertEqual(FileType.JSON, insights.get_download_file_type())
+            insights.set_download_file_type(FileType.HTML)
+            self.assertEqual(FileType.HTML, insights.get_download_file_type())
+            insights.set_download_file_type(FileType.MARKDOWN)
+            self.assertEqual(FileType.MARKDOWN, insights.get_download_file_type())
+            insights.set_download_file_type(FileType.PNG)
+            self.assertEqual(FileType.PNG, insights.get_download_file_type())
 
     def test_set_limit_to_all_results(self):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPXRoRnM0QnUyV2JKTHhQMDZ1dUpBT0QmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
         with TestSession() as browser:
             insights = InsightsPage(valid_query, browser)
-            insights.open_download_dialogue()
+            insights.open_download_modal()
             insights.set_limit_to_all_results()
             self.assertTrue(browser.element_is_selected_by_xpath(
                 "//input[@name='qr-export-modal-limit' and @value='all']"))
@@ -69,7 +74,7 @@ class TestInsightsPage(unittest.TestCase):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPXRoRnM0QnUyV2JKTHhQMDZ1dUpBT0QmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
         with TestSession() as browser:
             insights = InsightsPage(valid_query, browser)
-            insights.open_download_dialogue()
+            insights.open_download_modal()
             insights.set_custom_limit(357)
             self.assertTrue(browser.element_is_selected_by_xpath(
                 "//input[@name='qr-export-modal-limit' and @value='custom']"))
@@ -80,7 +85,7 @@ class TestInsightsPage(unittest.TestCase):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPXRoRnM0QnUyV2JKTHhQMDZ1dUpBT0QmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
         with TestSession() as browser:
             insights = InsightsPage(valid_query, browser)
-            insights.open_download_dialogue()
+            insights.open_download_modal()
             insights.set_file_name('data_file.csv')
             self.assertEqual(browser.get_element_attribute_by_xpath(
                 "//input[@name='customExportFilename']", "value"), 'data_file.csv')
@@ -89,6 +94,68 @@ class TestInsightsPage(unittest.TestCase):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPXRoRnM0QnUyV2JKTHhQMDZ1dUpBT0QmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
         with TestSession() as browser:
             insights = InsightsPage(valid_query, browser)
-            insights.open_download_dialogue()
+            insights.open_download_modal()
             with self.assertRaises(ValueError):
                 insights.set_file_name('')
+
+    def test_download_file_works_with_valid_download_dir(self):
+        valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPWtmaHNhdzRvODh0QnFPY1FxQ1NCNzYmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
+        file_name = 'test_file_123456789.csv'
+        file_path = download_dir + file_name
+        with TestSession() as browser:
+            insights = InsightsPage(valid_query, browser)
+            insights.open_download_modal()
+            insights.set_file_name(file_name)
+            self.assertEqual(file_path, insights.click_download_button(download_dir))
+            self.assertTrue(os.path.exists(file_path))
+            os.remove(file_path)
+
+    def test_download_file_throws_error_with_invalid_download_dir(self):
+        valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPWtmaHNhdzRvODh0QnFPY1FxQ1NCNzYmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
+        file_name = 'test_file_123456789.csv'
+        with TestSession() as browser:
+            insights = InsightsPage(valid_query, browser)
+            insights.open_download_modal()
+            insights.set_file_name(file_name)
+            with self.assertRaises(RuntimeError):
+                insights.click_download_button('a/fake/download/dir/', 10)
+
+    def test_open_in_browser_with_valid_file_type(self):
+        expected = [
+            {
+                'career_service_staffs.first_name': "David",
+                'career_service_staffs.last_name': " Le"
+            },
+            {
+                'career_service_staffs.first_name': "Ella",
+                'career_service_staffs.last_name': "Stern"
+            },
+            {
+                'career_service_staffs.first_name': "Joy",
+                'career_service_staffs.last_name': "Saunders"
+            },
+            {
+                'career_service_staffs.first_name': "Ted",
+                'career_service_staffs.last_name': "Shaprow"
+            },
+            {
+                'career_service_staffs.first_name': "Troy",
+                'career_service_staffs.last_name': "Parker"
+            }
+        ]
+        valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vY2FyZWVyX3NlcnZpY2Vfc3RhZmZzP3FpZD1oUGFSSldmQWpyQjFqcDYyd3FCaWh2JmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
+        with TestSession() as browser:
+            insights = InsightsPage(valid_query, browser)
+            insights.open_download_modal()
+            insights.set_download_file_type(FileType.JSON)
+            json_data = insights.click_open_in_browser()
+            self.assertEqual(expected, json_data)
+
+    def test_open_in_browser_throws_error_if_not_json(self):
+        valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vY2FyZWVyX3NlcnZpY2Vfc3RhZmZzP3FpZD1oUGFSSldmQWpyQjFqcDYyd3FCaWh2JmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
+        with TestSession() as browser:
+            insights = InsightsPage(valid_query, browser)
+            insights.open_download_modal()
+            insights.set_download_file_type(FileType.EXCEL)
+            with self.assertRaises(RuntimeError):
+                insights.click_open_in_browser()

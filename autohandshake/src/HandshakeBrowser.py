@@ -183,6 +183,17 @@ class HandshakeBrowser:
             raise WrongPageForMethodError('The main sidebar must be visible in '
                                           'order to get the school id')
 
+    def switch_to_new_tab(self):
+        """Wait for the new tab to finish loaded, then switch to it."""
+        WebDriverWait(self._browser, MAX_WAIT_TIME).until(
+            EC.number_of_windows_to_be(2))
+        self._browser.switch_to.window(self._browser.window_handles[-1])
+
+    def return_to_main_tab(self):
+        """With a second tab open, close the current tab and return to the main tab."""
+        self._browser.execute_script('window.close();')
+        self._browser.switch_to.window(self._browser.window_handles[0])
+
     @property
     def current_url(self):
         """Get the url of the browser's current page"""

@@ -11,6 +11,7 @@ password = Fernet(config['CONSTANTS']['KEY']).decrypt(bytes(config['CONSTANTS'][
 homepage = config['CONSTANTS']['HOMEPAGE']
 email = config['CONSTANTS']['EMAIL']
 school_id = config['CONSTANTS']['SCHOOL_ID']
+download_dir = config['CONSTANTS']['DOWNLOAD_DIR']
 
 
 class TestSession(HandshakeSession):
