@@ -9,6 +9,7 @@ import time
 from typing import List
 import json
 from enum import Enum
+from datetime import date
 
 DEFAULT_WAIT_TIME = 300
 
@@ -295,6 +296,55 @@ class InsightsPage(Page):
             # keep limit at "Results in Table" if "All Results" is not available
         return self.modal.click_download_button(download_dir, max_wait_time)
 
+    def set_date_range_filter(self, field_category: str, field_title: str,
+                              start_date: date, end_date: date):
+        """
+        Set a date range filter on the Insights report to the given start and end date.
+
+        Insights date filters are identified by a two-part name: the first part
+        indicates the "category" or subject matter the date refers to, and the
+        second part indicates the specific date field on that category.
+
+        For example: the filter for the start date of an appointment is called
+        "Appointments Start Date Date." In the Insights filter box, this title
+        appears with the "Start Date Date" part in bold and the "Appointments"
+        part in regular type. In this case "Appointments" is the field_category,
+        and "Start Date Date" is the field_title. This methods requires both
+        parts of the name in order to apply the given start and end dates to the
+        correct filter.
+
+        IMPORTANT: at this time, this method only works on date range filters
+        that follow the form "[Category] [Title] is in range [start] until (before) [end]."
+        The method does not work on month or time filters, or on filters that do
+        not represent a range between two time-less dates. Also, the filter must
+        already exist in the Insights page; this method will not create a filter,
+        merely modify the dates of an existing one.
+
+        :param field_category: the date filter's category name (see method description)
+        :type field_category: str
+        :param field_title: the date filter's title (see method description)
+        :type field_title: str
+        :param start_date: the start date to use in the filter
+        :type start_date: date
+        :param end_date: the end date to use in the filter. IMPORTANT: Handshake
+                         date ranges go *up to but not including* the end date,
+                         so a filter from 1/15/19 to 1/30/19 will NOT include any
+                         data from 1/30/19, for example.
+        :type end_date: date
+        """
+        ENTER_KEY = u'\ue007'
+        BACKSPACE_KEY = u'\u0008'
+        start_date_str = self._format_date(start_date)
+        end_date_str = self._format_date(end_date)
+
+        date_inputs_xpath = '//tr[@class="filter ng-scope"][.//span[@class="' \
+                            'ng-binding" and text()="{}"][../' \
+                            'strong/text()="{}"]]//span[{}]/span/input'
+        start_xpath = date_inputs_xpath.format(field_category, field_title, 2)
+        end_xpath = date_inputs_xpath.format(field_category, field_title, 3)
+        self._browser.send_text_to_element_by_xpath(start_xpath, (BACKSPACE_KEY * 10) + start_date_str + ENTER_KEY * 2)
+        self._browser.send_text_to_element_by_xpath(end_xpath, (BACKSPACE_KEY * 10) + end_date_str + ENTER_KEY * 2)
+
 
     def validate_url(self, url):
         """
@@ -305,11 +355,11 @@ class InsightsPage(Page):
         :type url: str
         """
         try:  # try full URL match
-            re.match(fr'^{BASE_URL}/analytics/explore_embed\?insights_page=[a-zA-Z0-9_]+(==)?$', url) \
+            re.match(f'^{BASE_URL}' + r'/analytics/explore_embed\?insights_page=[a-zA-Z0-9_]+(=){0,2}$', url) \
                 .group(0)
         except AttributeError:
             try:  # try query parameter match
-                re.match(r'^[a-zA-Z0-9_]+(==)?$', url) \
+                re.match(r'^[a-zA-Z0-9_]+(=){0,2}$', url) \
                     .group(0)
             except AttributeError:
                 raise InvalidURLError()
@@ -334,4 +384,14 @@ class InsightsPage(Page):
 
             self._browser.wait_until_element_exists_by_xpath(exists_once_iframe_in_focus)
 
+    @staticmethod
+    def _format_date(date: date) -> str:
+        """
+        Format the given date as a string of the form yyyy-mm-dd.
 
+        :param date: the date to format
+        :type date: date
+        :return: a date string in the form yyyy-mm-dd
+        :rtype: str
+        """
+        return date.strftime('%Y-%m-%d')

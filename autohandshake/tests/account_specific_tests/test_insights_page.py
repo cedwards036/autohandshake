@@ -3,6 +3,7 @@ from autohandshake.src.Pages import InsightsPage, FileType
 from autohandshake.tests import TestSession, download_dir
 from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError
 import os
+from datetime import date, datetime
 
 
 class TestInsightsPage(unittest.TestCase):
@@ -61,6 +62,43 @@ class TestInsightsPage(unittest.TestCase):
             self.assertEqual(expected_filepath, downloaded_filepath)
             self.assertTrue(os.path.exists(expected_filepath))
             os.remove(expected_filepath)
+
+    def test_set_date_range_filter(self):
+        def test_date_field(insights: InsightsPage, field: dict, new_start: date, new_end: date):
+            """Helper function to test a given date field"""
+            self.assertEqual(field['old_start_date'],
+                             insights._browser.get_element_attribute_by_xpath(field['start_xpath'], 'value'))
+            self.assertEqual(field['old_end_date'],
+                             insights._browser.get_element_attribute_by_xpath(field['end_xpath'], 'value'))
+            insights.set_date_range_filter(field['category'], field['title'], new_start, new_end)
+            self.assertEqual(new_start.strftime('%Y-%m-%d'),
+                             insights._browser.get_element_attribute_by_xpath(field['start_xpath'], 'value'))
+            self.assertEqual(new_end.strftime('%Y-%m-%d'),
+                             insights._browser.get_element_attribute_by_xpath(field['end_xpath'], 'value'))
+
+        jobs_insights = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vam9icz9xaWQ9UVJ3OVZRR2xORHVnYnVQZWJtYVI3diZlbWJlZF9kb21haW49aHR0cHM6JTJGJTJGYXBwLmpvaW5oYW5kc2hha2UuY29tJnRvZ2dsZT1maWw='
+        field1 = {'category': 'Postings', 'title': 'Created At Date',
+                  'old_start_date': '2007-05-09', 'old_end_date': '2014-05-07',
+                  'start_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[2]/td[3]/lk-filter/table/tbody/tr/td[2]/span[2]/span[1]/input',
+                  'end_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[2]/td[3]/lk-filter/table/tbody/tr/td[2]/span[3]/span/input'}
+
+        field2 = {'category': 'Postings', 'title': 'Expiration Date Date',
+                  'old_start_date': '2016-03-28', 'old_end_date': '2017-08-28',
+                  'start_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[3]/td[3]/lk-filter/table/tbody/tr/td[2]/span[2]/span[1]/input',
+                  'end_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[3]/td[3]/lk-filter/table/tbody/tr/td[2]/span[3]/span/input'}
+
+        field3 = {'category': 'Jobs', 'title': 'Start Date Date',
+                  'old_start_date': '2019-04-02', 'old_end_date': '2019-04-16',
+                  'start_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[1]/td[3]/lk-filter/table/tbody/tr/td[2]/span[2]/span[1]/input',
+                  'end_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[1]/td[3]/lk-filter/table/tbody/tr/td[2]/span[3]/span/input'}
+        with TestSession() as browser:
+            insights = InsightsPage(jobs_insights, browser)
+            test_date_field(insights, field1, datetime.strptime('10/31/2017', '%m/%d/%Y').date(),
+                            datetime.strptime('12/03/2017', '%m/%d/%Y').date())
+            test_date_field(insights, field2, datetime.strptime('12/02/2008', '%m/%d/%Y').date(),
+                            datetime.strptime('05/04/2019', '%m/%d/%Y').date())
+            test_date_field(insights, field3, datetime.strptime('01/02/2013', '%m/%d/%Y').date(),
+                            datetime.strptime('02/03/2014', '%m/%d/%Y').date())
 
 
 class TestInsightsPageDownloadModal(unittest.TestCase):
