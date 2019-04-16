@@ -230,7 +230,7 @@ class _DownloadModal:
 
 
 class InsightsPage(Page):
-    """The overview settings page listing all appointment types"""
+    """Handshake's custom data reporting page (powered by Looker)"""
 
     def __init__(self, url_string: str, browser: HandshakeBrowser):
         """
