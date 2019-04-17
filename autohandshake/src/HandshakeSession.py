@@ -1,6 +1,7 @@
 from autohandshake.src import HandshakeBrowser
 from autohandshake.src.exceptions import InvalidURLError
 from autohandshake.src.Pages.LoginPage import LoginPage
+from autohandshake.src.constants import MAX_WAIT_TIME
 
 
 class HandshakeSession:
@@ -14,18 +15,26 @@ class HandshakeSession:
 
     """
 
-    def __init__(self, login_url: str, email: str, password: str):
+    def __init__(self, login_url: str, email: str, password: str,
+                 max_wait_time: int = MAX_WAIT_TIME):
         """
         Initialize Handshake session.
 
         :param login_url: a valid Handshake homepage url of the form
                           "https://[school].joinhandshake.com"
         :type login_url: str
+        :param email: a valid handshake admin email
+        :type email: str
+        :param password: the password associated with the given email
+        :type password: str
+        :param max_wait_time: the maximum time to wait for something to load
+                              before throwing a timeout error
+        :type max_wait_time: int
         """
         self._login_url = login_url
         self._email = email
         self._password = password
-        self._browser = HandshakeBrowser()
+        self._browser = HandshakeBrowser(max_wait_time=max_wait_time)
 
     def __enter__(self) -> HandshakeBrowser:
         """Open a web browser and log into Handshake, beginning the session"""

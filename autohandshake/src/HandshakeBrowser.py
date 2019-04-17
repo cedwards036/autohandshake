@@ -15,7 +15,14 @@ from autohandshake.src.constants import MAX_WAIT_TIME
 class HandshakeBrowser:
     """An automated browser for navigating Handshake"""
 
-    def __init__(self):
+    def __init__(self, max_wait_time: int = MAX_WAIT_TIME):
+        """
+        Initialize a HandshakeBrowser object
+
+        :param max_wait_time: the maximum time to wait for an element to load
+                              before throwing a timeout error
+        :type max_wait_time: int
+        """
         options = webdriver.ChromeOptions()
         options.add_argument('--window-size=1920,1080')
 
@@ -24,6 +31,7 @@ class HandshakeBrowser:
 
         self._browser = webdriver.Chrome(executable_path=driver_path,
                                          options=options)
+        self.max_wait_time = max_wait_time
 
     def get(self, url: str):
         """Go to the web page specified by the given Handshake url.
@@ -64,7 +72,7 @@ class HandshakeBrowser:
         :type xpath: str
         """
         try:
-            WebDriverWait(self._browser, MAX_WAIT_TIME).until(
+            WebDriverWait(self._browser, self.max_wait_time).until(
                 EC.visibility_of_element_located((By.XPATH, xpath)))
         except TimeoutException:
             raise TimeoutError(f"Element with xpath {xpath} did not appear")
@@ -77,7 +85,7 @@ class HandshakeBrowser:
         :type xpath: str
         """
         try:
-            WebDriverWait(self._browser, MAX_WAIT_TIME).until(
+            WebDriverWait(self._browser, self.max_wait_time).until(
                 EC.element_to_be_clickable((By.XPATH, xpath)))
         except TimeoutException:
             raise TimeoutError(f"Element with xpath {xpath} did not become clickable")
@@ -185,7 +193,7 @@ class HandshakeBrowser:
 
     def switch_to_new_tab(self):
         """Wait for the new tab to finish loaded, then switch to it."""
-        WebDriverWait(self._browser, MAX_WAIT_TIME).until(
+        WebDriverWait(self._browser, self.max_wait_time).until(
             EC.number_of_windows_to_be(2))
         self._browser.switch_to.window(self._browser.window_handles[-1])
 
