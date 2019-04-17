@@ -219,7 +219,7 @@ class HandshakeBrowser:
         """Determine whether the current page exists or gave a 404 error."""
         if self.element_exists_by_xpath("//p[contains(text(), 'You may want "
                                         "to head back to the homepage.')]"):
-            raise InvalidURLError
+            raise InvalidURLError(self._browser.current_url)
 
     def _validate_permissions(self):
         """Determine whether or not the logged in user has permission to view the current page"""
