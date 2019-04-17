@@ -2,6 +2,7 @@ import configparser
 import os
 from cryptography.fernet import Fernet
 from autohandshake import HandshakeSession
+from autohandshake.src.constants import MAX_WAIT_TIME
 
 config = configparser.ConfigParser()
 config.read(os.path.dirname(__file__) + './config.ini')
@@ -17,5 +18,5 @@ download_dir = config['CONSTANTS']['DOWNLOAD_DIR']
 class TestSession(HandshakeSession):
     """A testing instance of HandshakeSession that always logs in with config-based credentials"""
 
-    def __init__(self):
-        super().__init__(homepage, email, password)
+    def __init__(self, max_wait_time=MAX_WAIT_TIME):
+        super().__init__(homepage, email, password, max_wait_time)
