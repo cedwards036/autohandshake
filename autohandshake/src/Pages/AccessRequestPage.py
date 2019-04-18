@@ -24,7 +24,7 @@ class AccessRequestPage(Page):
 
     def __init__(self, browser: HandshakeBrowser):
         """
-        Load the major groups settings page from the school settings
+        Load the Handshake account access request page
 
         :param browser: a logged-in HandshakeBrowser
         :type browser: HandshakeBrowser
