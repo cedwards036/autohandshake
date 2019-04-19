@@ -101,6 +101,7 @@ class _DownloadModal:
         self.validate_download_modal_is_open()
         all_results_radio_xpath = "//input[@name='qr-export-modal-limit' and @value='all']"
         remove_sorts_xpath = "//input[@ng-model='queryDownloadController.runUnsorted']"
+        time.sleep(0.1)  # account for unknown, inconsistent timing error that prevents clicking
         try:
             self._browser.wait_until_element_is_clickable_by_xpath(all_results_radio_xpath)
             self._browser.click_element_by_xpath(all_results_radio_xpath)
@@ -122,6 +123,7 @@ class _DownloadModal:
         self.validate_download_modal_is_open()
         custom_limit_radio_xpath = "//input[@name='qr-export-modal-limit' and @value='custom']"
         custom_limit_value_xpath = "//input[@name='customExportLimit']"
+        time.sleep(0.1)  # account for unknown, inconsistent timing error that prevents clicking
         self._browser.wait_until_element_is_clickable_by_xpath(custom_limit_radio_xpath)
         self._browser.click_element_by_xpath(custom_limit_radio_xpath)
         self._browser.wait_until_element_is_clickable_by_xpath(custom_limit_value_xpath)

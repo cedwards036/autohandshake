@@ -142,7 +142,7 @@ class TestInsightsPageDownloadModal(unittest.TestCase):
 
     def test_set_custom_limit(self):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPXRoRnM0QnUyV2JKTHhQMDZ1dUpBT0QmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
-        with TestSession() as browser:
+        with TestSession(60) as browser:
             insights = InsightsPage(valid_query, browser)
             insights.modal.open()
             insights.modal.set_custom_limit(357)
