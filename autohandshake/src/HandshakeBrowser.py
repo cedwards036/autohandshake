@@ -75,7 +75,20 @@ class HandshakeBrowser:
             WebDriverWait(self._browser, self.max_wait_time).until(
                 EC.visibility_of_element_located((By.XPATH, xpath)))
         except TimeoutException:
-            raise TimeoutError(f"Element with xpath {xpath} did not appear")
+            raise TimeoutError(f"Element with xpath {xpath} did not appear in time")
+
+    def wait_until_element_does_not_exist_by_xpath(self, xpath: str):
+        """
+        Wait until an element with the given xpath exists on the page.
+
+        :param xpath: the xpath of the element to wait for
+        :type xpath: str
+        """
+        try:
+            WebDriverWait(self._browser, self.max_wait_time).until(
+                EC.invisibility_of_element_located((By.XPATH, xpath)))
+        except TimeoutException:
+            raise TimeoutError(f"Element with xpath {xpath} did not disappear in tme")
 
     def wait_until_element_is_clickable_by_xpath(self, xpath: str):
         """
@@ -122,6 +135,17 @@ class HandshakeBrowser:
         except NoSuchElementException:
             raise NoSuchElementError(f'No element found for xpath: "{xpath}"')
 
+    def wait_then_click_element_by_xpath(self, xpath):
+        """
+        Click an element on the page given its xpath after waiting to make sure
+        it exists
+
+        :param xpath: the xpath of the element to click
+        :type xpath: str
+        """
+        self.wait_until_element_exists_by_xpath(xpath)
+        self.click_element_by_xpath(xpath)
+
     def get_element_attribute_by_xpath(self, xpath: str, attribute: str) -> str:
         """
         Get the value of the given attribute from the element with the given xpath
@@ -158,6 +182,25 @@ class HandshakeBrowser:
             return [element.get_attribute(attribute) for element in elements]
         except NoSuchElementException:
             raise NoSuchElementError(f'No elements found for xpath: "{xpath}"')
+
+    def execute_script_on_element_by_xpath(self, script: str, xpath: str = None):
+        """
+        Execute the given javascript expression. If xpath of element is provided,
+        the element becomes available to use in the script, and can be accessed
+        using arguments[0].
+
+        :param script: the javascript to be executed
+        :type script: str
+        :param xpath: the xpath of the optional element to be passed to the script
+        :type xpath: str
+        """
+        if not xpath:
+            self._browser.execute_script(script)
+        else:
+            try:
+                self._browser.execute_script(script, self._browser.find_element_by_xpath(xpath))
+            except NoSuchElementException:
+                raise NoSuchElementError(f'No elements found for xpath: "{xpath}"')
 
     def element_is_selected_by_xpath(self, xpath: str) -> bool:
         """Get whether or not the element specified by the given xpath is selected
@@ -201,6 +244,10 @@ class HandshakeBrowser:
         """With a second tab open, close the current tab and return to the main tab."""
         self._browser.execute_script('window.close();')
         self._browser.switch_to.window(self._browser.window_handles[0])
+
+    def maximize_window(self):
+        """Maximize the browser window."""
+        self._browser.maximize_window()
 
     @property
     def current_url(self):
