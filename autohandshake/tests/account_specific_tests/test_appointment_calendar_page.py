@@ -1,5 +1,5 @@
 import unittest
-from autohandshake.src.Pages import AppointmentCalendarPage
+from autohandshake import AppointmentCalendarPage
 from autohandshake.tests import TestSession
 from datetime import datetime
 
