@@ -22,7 +22,7 @@ copyright = '2019, Christopher Edwards'
 author = 'Christopher Edwards'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.4'
+release = '1.0.5'
 
 # -- General configuration ---------------------------------------------------
 
