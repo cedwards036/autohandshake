@@ -11,7 +11,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="autohandshake",
-    version="1.0.2",
+    version="1.0.3",
     description="A library for automating tasks on the Handshake career services platform",
     long_description=README,
     url="https://github.com/cedwards036/autohandshake",
