@@ -10,8 +10,6 @@ class AppointmentTypePage(Page):
 
     def __init__(self, type_id: int, browser: HandshakeBrowser):
         """
-        Load the appointment type settings page for the type with the given id
-
         :param type_id: the id of the appointment type to load
         :type type_id: int
         :param browser: a logged-in HandshakeBrowser
@@ -21,6 +19,37 @@ class AppointmentTypePage(Page):
         super().__init__(f'{BASE_URL}/appointment_types/{type_id}/edit', browser)
 
     def get_settings(self) -> dict:
+        """
+        Get the settings for this page's appointment type.
+
+        The method returns a dictionary of settings values of the form:
+        ::
+
+            {
+                'id': 238492,
+                'name': 'STEM Resume Appointment',
+                'description': 'An appointment for STEM students who want to improve their resume.',
+                'length': 30,
+                'categories': ['Resume/Cover Letter Review'],
+                'drop_in_enabled': False,
+                'pre_message': 'Please bring your resume with you to the appointment.',
+                'pre_survey': None,
+                'post_message': 'Thank you for stopping by!',
+                'post_survey': 'Resume Review Satisfaction Survey',
+                'staff_survey': 'Main Career Center Staff Survey',
+                'school_years': ['Sophomore', 'Junior', 'Senior'],
+                'cum_gpa_required': True,
+                'cum_gpa': 3.0,
+                'major_groups': ['major_group: Computer Science', 'major_group: Chemical Engineerng',
+                                 'major_group: Biology', 'indv_major: Biological Engineering'],
+                'colleges': ['School of Engineering', 'School of Arts & Sciences'],
+                'labels': ['appointments allowed'],
+                'career_clusters': ['Science Careers', 'Engineering Careers']
+            }
+
+        :return: a dictionary of all the appointment type settings fields
+        :rtype: dict
+        """
         settings = {}
 
         # collect fields from first page
@@ -62,7 +91,7 @@ class AppointmentTypePage(Page):
 
         return settings
 
-    def validate_url(self, url):
+    def _validate_url(self, url):
         """
         Ensure that the given URL is a valid URL.
 
@@ -73,7 +102,7 @@ class AppointmentTypePage(Page):
         """
         return
 
-    def wait_until_page_is_loaded(self):
+    def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
         self._browser.wait_until_element_exists_by_xpath("//input[@id='appointment_type_name']")
 

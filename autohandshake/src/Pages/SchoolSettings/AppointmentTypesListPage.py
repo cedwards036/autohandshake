@@ -10,8 +10,6 @@ class AppointmentTypesListPage(Page):
 
     def __init__(self, browser: HandshakeBrowser):
         """
-        Load the appointment types list view from the school settings
-
         :param browser: a logged-in HandshakeBrowser
         :type browser: HandshakeBrowser
         """
@@ -26,7 +24,9 @@ class AppointmentTypesListPage(Page):
 
     def get_type_settings(self, how_many: int = None) -> list:
         """
-        Get a list of settings objects for all appointment type settings
+        Get a list of settings objects for all appointment type settings.
+
+        The method returns a list of dicts, each of the form specified in :func:`autohandshake.AppointmentTypePage.get_settings()`
 
         :param how_many: if specified, the number of settings objects to collect.
                          If None (the default), collect all settings. This
@@ -51,7 +51,7 @@ class AppointmentTypesListPage(Page):
         """Given an appointment type settings url, extract the type id"""
         return int(re.search("/appointment_types/([0-9]+)/edit", url).group(1))
 
-    def validate_url(self, url):
+    def _validate_url(self, url):
         """
         Ensure that the given URL is a valid URL.
 
@@ -62,6 +62,6 @@ class AppointmentTypesListPage(Page):
         """
         return
 
-    def wait_until_page_is_loaded(self):
+    def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
         self._browser.wait_until_element_exists_by_xpath("//*[@class='top-right-btn']")

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <title>Getting Started &#8212; autohandshake 1.0.3 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css"/>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css"/>
+    <script type="text/javascript" id="documentation_options" data-url_root="./"
+            src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html"/>
+    <link rel="search" title="Search" href="search.html"/>
+    <link rel="next" title="HandshakeSession" href="handshakesession.html"/>
+    <link rel="prev" title="Installation" href="installation.html"/>
+</head>
+<body>
+<div class="related" role="navigation" aria-label="related navigation">
+    <h3>Navigation</h3>
+    <ul>
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index"
+               accesskey="I">index</a></li>
+        <li class="right">
+            <a href="py-modindex.html" title="Python Module Index"
+            >modules</a> |
+        </li>
+        <li class="right">
+            <a href="handshakesession.html" title="HandshakeSession"
+               accesskey="N">next</a> |
+        </li>
+        <li class="right">
+            <a href="installation.html" title="Installation"
+               accesskey="P">previous</a> |
+        </li>
+        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.3 documentation</a> &#187;</li>
+    </ul>
+</div>
+
+<div class="document">
+    <div class="documentwrapper">
+        <div class="bodywrapper">
+            <div class="body" role="main">
+
+                <div class="section" id="getting-started">
+                    <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a>
+                    </h1>
+                    <div class="section" id="handshakesession">
+                        <h2>HandshakeSession<a class="headerlink" href="#handshakesession"
+                                               title="Permalink to this headline">¶</a></h2>
+                        <p>Autohandshake’s central class is <a class="reference internal"
+                                                               href="handshakesession.html#autohandshake.HandshakeSession"
+                                                               title="autohandshake.HandshakeSession"><code
+                                class="xref py py-class docutils literal notranslate"><span
+                                class="pre">HandshakeSession</span></code></a>, a <a class="reference external"
+                                                                                     href="https://www.geeksforgeeks.org/context-manager-in-python/">context
+                            manager</a> that represents a browsing
+                            session on the Handshake platform. Instantiating the class using a “with” statement and
+                            providing valid login credentials
+                            will log you into Handshake and plop you on the homepage. From there, you can use the
+                            various <a class="reference external" href="./pages.html">Pages</a> to perform
+                            actions on different webpages within Handshake.</p>
+                        <p>Example:</p>
+                        <div class="highlight-default notranslate">
+                            <div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HandshakeSession</span><span
+                                    class="p">(</span><span class="n">school_url</span><span class="p">,</span> <span
+                                    class="n">email</span><span class="p">,</span> <span class="n">password</span><span
+                                    class="p">)</span> <span class="k">as</span> <span class="n">browser</span><span
+                                    class="p">:</span>
+    <span class="c1"># do something</span>
+</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section" id="id1">
+                        <h2>Pages<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+                        <p>The main functionality of autohandshake comes from its Page classes. These are essentially
+                            collections of methods that
+                            are associated with specific pages in Handshake. For example, the InsightsPage class can do
+                            things like download an Insights
+                            report and change the dates in a date range filter.</p>
+                        <p>Every Page-type class takes at least one constructor argument: a logged-in <a
+                                class="reference internal" href="handshakebrowser.html#autohandshake.HandshakeBrowser"
+                                title="autohandshake.HandshakeBrowser"><code
+                                class="xref py py-class docutils literal notranslate"><span
+                                class="pre">HandshakeBrowser</span></code></a>.
+                            While each Page class specifies the possible actions that can be taken on their respective
+                            pages, the <a class="reference internal"
+                                          href="handshakebrowser.html#autohandshake.HandshakeBrowser"
+                                          title="autohandshake.HandshakeBrowser"><code
+                                    class="xref py py-class docutils literal notranslate"><span class="pre">HandshakeBrowser</span></code></a>
+                            actually performs those actions, such as clicking a button, waiting for a page to load, or
+                            entering text. The <a class="reference internal"
+                                                  href="handshakesession.html#autohandshake.HandshakeSession"
+                                                  title="autohandshake.HandshakeSession"><code
+                                    class="xref py py-class docutils literal notranslate"><span class="pre">HandshakeSession</span></code></a>
+                            context manager returns a logged-in <a class="reference internal"
+                                                                   href="handshakebrowser.html#autohandshake.HandshakeBrowser"
+                                                                   title="autohandshake.HandshakeBrowser"><code
+                                    class="xref py py-class docutils literal notranslate"><span class="pre">HandshakeBrowser</span></code></a>
+                            that can be injected into any Page class.</p>
+                        <p>To load a page, simply instantiate the page’s class, passing in the session’s <a
+                                class="reference internal" href="handshakebrowser.html#autohandshake.HandshakeBrowser"
+                                title="autohandshake.HandshakeBrowser"><code
+                                class="xref py py-class docutils literal notranslate"><span
+                                class="pre">HandshakeBrowser</span></code></a> as well as
+                            any other arguments required by the page’s constructor. You are now free to use any of the
+                            available methods on that page.</p>
+                        <p>Example:</p>
+                        <div class="highlight-default notranslate">
+                            <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">autohandshake</span> <span
+                                    class="k">import</span> <span class="n">HandshakeBrowser</span><span
+                                    class="p">,</span> <span class="n">InsightsPage</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="n">appts_by_status_report</span> <span class="o">=</span> <span class="s1">&#39;https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vYXBwb2ludG1lbnRzP3FpZD1pcDFLd0ZlSmh4VVdobXYxa212U2xuJmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA==&#39;</span>
+
+<span class="k">with</span> <span class="n">HandshakeBrowser</span><span class="p">(</span><span
+                                        class="n">school_url</span><span class="p">,</span> <span class="n">email</span><span
+                                        class="p">,</span> <span class="n">password</span><span class="p">)</span> <span
+                                        class="k">as</span> <span class="n">browser</span><span class="p">:</span>
+    <span class="n">insights_page</span> <span class="o">=</span> <span class="n">InsightsPage</span><span
+                                        class="p">(</span><span class="n">appts_by_status_report</span><span
+                                        class="p">,</span> <span class="n">browser</span><span class="p">)</span>
+    <span class="n">insights_page</span><span class="o">.</span><span class="n">set_date_range_filter</span><span
+                                        class="p">(</span><span class="s1">&#39;Appointments&#39;</span><span class="p">,</span> <span
+                                        class="s1">&#39;Start Date Date&#39;</span><span class="p">,</span>
+                                        <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span
+                                        class="o">.</span><span class="n">datetime</span><span class="p">(</span><span
+                                        class="mi">2018</span><span class="p">,</span> <span class="mi">1</span><span
+                                        class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                        <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span
+                                        class="o">.</span><span class="n">datetime</span><span class="p">(</span><span
+                                        class="mi">2019</span><span class="p">,</span> <span class="mi">1</span><span
+                                        class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">report_data</span> <span class="o">=</span> <span class="n">insights_page</span><span
+                                        class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+</pre>
+                            </div>
+                        </div>
+                        <p>IMPORTANT: only the most recently loaded page’s methods are available for use at any given
+                            time. Attempting something like
+                            the following will throw an error, since the first page is no longer active in the browser
+                            when its method is called:</p>
+                        <div class="highlight-default notranslate">
+                            <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">autohandshake</span> <span
+                                    class="k">import</span> <span class="n">HandshakeBrowser</span><span
+                                    class="p">,</span> <span class="n">MajorSettingsPage</span><span class="p">,</span> <span
+                                    class="n">AppointmentTypePage</span>
+
+<span class="k">with</span> <span class="n">HandshakeBrowser</span><span class="p">(</span><span
+                                        class="n">school_url</span><span class="p">,</span> <span class="n">email</span><span
+                                        class="p">,</span> <span class="n">password</span><span class="p">)</span> <span
+                                        class="k">as</span> <span class="n">browser</span><span class="p">:</span>
+    <span class="c1"># load a page</span>
+    <span class="n">major_settings_page</span> <span class="o">=</span> <span class="n">MajorSettingsPage</span><span
+                                        class="p">(</span><span class="n">browser</span><span class="p">)</span>
+    <span class="c1"># load a second page</span>
+    <span class="n">appt_type_page</span> <span class="o">=</span> <span class="n">AppointmentTypePage</span><span
+                                        class="p">(</span><span class="mi">232523</span><span class="p">,</span> <span
+                                        class="n">browser</span><span class="p">)</span>
+    <span class="c1"># call a method on the first page</span>
+    <span class="n">major_settings_page</span><span class="o">.</span><span class="n">get_major_mapping</span><span
+                                        class="p">()</span> <span class="c1"># ERROR!</span>
+</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table of Contents</a></h3>
+            <ul>
+                <li><a class="reference internal" href="#">Getting Started</a>
+                    <ul>
+                        <li><a class="reference internal" href="#handshakesession">HandshakeSession</a></li>
+                        <li><a class="reference internal" href="#id1">Pages</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="installation.html"
+                                  title="previous chapter">Installation</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="handshakesession.html"
+                                  title="next chapter">HandshakeSession</a></p>
+            <div role="note" aria-label="source link">
+                <h3>This Page</h3>
+                <ul class="this-page-menu">
+                    <li><a href="_sources/gettingstarted.rst.txt"
+                           rel="nofollow">Show Source</a></li>
+                </ul>
+            </div>
+            <div id="searchbox" style="display: none" role="search">
+                <h3>Quick search</h3>
+                <div class="searchformwrapper">
+                    <form class="search" action="search.html" method="get">
+                        <input type="text" name="q"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+    </div>
+    <div class="clearer"></div>
+</div>
+<div class="related" role="navigation" aria-label="related navigation">
+    <h3>Navigation</h3>
+    <ul>
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index"
+            >index</a></li>
+        <li class="right">
+            <a href="py-modindex.html" title="Python Module Index"
+            >modules</a> |
+        </li>
+        <li class="right">
+            <a href="handshakesession.html" title="HandshakeSession"
+            >next</a> |
+        </li>
+        <li class="right">
+            <a href="installation.html" title="Installation"
+            >previous</a> |
+        </li>
+        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.3 documentation</a> &#187;</li>
+    </ul>
+</div>
+<div class="footer" role="contentinfo">
+    &#169; Copyright 2019, Christopher Edwards.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+</div>
+</body>
+</html>

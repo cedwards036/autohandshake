@@ -2,8 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import ElementNotVisibleException, \
-    NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import re
 import os
 
@@ -13,14 +12,40 @@ from autohandshake.src.constants import MAX_WAIT_TIME
 
 
 class HandshakeBrowser:
-    """An automated browser for navigating Handshake"""
+    """
+    An automated browser for navigating Handshake.
+
+    Since a logged-in instance of this class is returned by HandshakeSession's
+    __enter__ method, it does not usually need to be manually instantiated. Additionally,
+    for most use cases, the user only needs to pass a HandshakeBrowser object to
+    a Page object, then let the Page's methods do the heavy-lifting.
+
+    For example, you almost never need to write:
+    ::
+        browser = HandshakeBrowser()
+
+    The vast majority of use cases look something like:
+    ::
+        with HandshakeSession(school_url, email, password) as browser:
+            some_page = SomePage(browser)
+            some_page.do_something()
+
+    If you need to specify a custom max_wait_time, that can be done through the
+    HandshakeSession object:
+    ::
+        # this
+        with HandshakeSession(school_url, email, password, max_wait_time = 60) as browser:
+            some_page = SomePage(browser)
+
+        # not this
+        browser = HandshakeBrowser(max_wait_time = 60)
+
+    """
 
     def __init__(self, max_wait_time: int = MAX_WAIT_TIME):
         """
-        Initialize a HandshakeBrowser object
-
-        :param max_wait_time: the maximum time to wait for an element to load
-                              before throwing a timeout error
+        :param max_wait_time: the maximum time (in seconds) to wait for an element
+                              to load before throwing a timeout error
         :type max_wait_time: int
         """
         options = webdriver.ChromeOptions()

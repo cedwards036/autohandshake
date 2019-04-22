@@ -17,14 +17,14 @@ class Page(ABC):
         :param browser: a HandshakeBrowser that is logged in to Handshake
         :type browser: HandshakeBrowser
         """
-        self.validate_url(url)
+        self._validate_url(url)
         self._url = url
         self._browser = browser
         self._browser.get(url)
-        self.wait_until_page_is_loaded()
+        self._wait_until_page_is_loaded()
 
     @abstractmethod
-    def wait_until_page_is_loaded(self):
+    def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading.
 
         For pages without complex javascript involved in the load, simply
@@ -39,13 +39,13 @@ class Page(ABC):
         browser is on a different page
         """
         try:
-            self.validate_url(self._browser.current_url)
-            self.wait_until_page_is_loaded()
+            self._validate_url(self._browser.current_url)
+            self._wait_until_page_is_loaded()
         except InvalidURLError:
             raise WrongPageForMethodError()
 
     @abstractmethod
-    def validate_url(self, url):
+    def _validate_url(self, url):
         """
         Ensure that the given URL is a valid URL for this page type
 

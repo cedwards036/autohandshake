@@ -1,6 +1,7 @@
 from autohandshake.src import (
     # main classes
     HandshakeSession,
+    HandshakeBrowser,
 
     # pages
     AccessRequestPage,

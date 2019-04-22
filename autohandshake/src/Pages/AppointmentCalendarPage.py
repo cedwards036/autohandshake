@@ -13,8 +13,6 @@ class AppointmentCalendarPage(Page):
 
     def __init__(self, browser: HandshakeBrowser):
         """
-        Load the appointment calendar page
-
         :param browser: a logged-in HandshakeBrowser
         :type browser: HandshakeBrowser
         """
@@ -56,14 +54,15 @@ class AppointmentCalendarPage(Page):
         start_date up to (but not including) end_date.
 
         The method returns a list of appointment block dicts of the form:
+        ::
 
             {
-                'start_time': [block start time],
-                'end_time': [block end time],
-                'length': [the difference, in minutes, between start and end times],
-                'status': 'unfilled',
-                'staff_name': [the name of the staff member associated with the block],
-                ('mediums': [optional: the list of possible mediums for the open block])
+                'start_time': datetime.datetime(2019, 3, 7, 9, 30), # block start time
+                'end_time': datetime.datetime(2019, 3, 7, 10, 30), # block end time
+                'length': 60, # difference in minutes between start time and end time
+                'status': 'unfilled', # status of the appointment
+                'staff_name': 'Jane Coach', # the name of the staff member associated with the block
+                'mediums': ['in-person', 'virtual'] # [OPTIONAL] the list of possible mediums for the open block
             }
 
         :param start_date: the start date of the date range from which to pull the data
@@ -87,7 +86,7 @@ class AppointmentCalendarPage(Page):
 
         return results
 
-    def validate_url(self, url):
+    def _validate_url(self, url):
         """
         Ensure that the given URL is a valid URL.
 
@@ -98,7 +97,7 @@ class AppointmentCalendarPage(Page):
         """
         return
 
-    def wait_until_page_is_loaded(self):
+    def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
 
         # altering the window size is necessary because the calendar's responsive

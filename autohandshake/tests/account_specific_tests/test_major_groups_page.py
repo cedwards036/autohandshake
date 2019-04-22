@@ -9,18 +9,12 @@ class TestMajorSettingsPage(unittest.TestCase):
         with TestSession() as browser:
             major_settings_page = MajorSettingsPage(browser)
             mapping = major_settings_page.get_major_mapping()
-            self.assertEqual(
-                {
-                    'major': 'AD: Piano',
-                    'groups': ['Music & Music Education', 'Visual & Performing Arts']
-                }, mapping[3])
-            self.assertEqual(
-                {
-                    'major': 'Applied Physics',
-                    'groups': ['General Engineering', 'Aerospace Engineering', 'Physics']
-                }, mapping[12])
-            self.assertEqual(
-                {
-                    'major': 'Bachelors: Film & Media Studies',
-                    'groups': ['Documentary/Film', 'Public Relations', 'Radio, Television, Media']
-                }, mapping[30])
+            self.assertEqual('AD: Piano', mapping[3]['major'])
+            self.assertEqual(['Music & Music Education', 'Visual & Performing Arts'], sorted(mapping[3]['groups']))
+
+            self.assertEqual('Applied Physics', mapping[12]['major'])
+            self.assertEqual(['Aerospace Engineering', 'General Engineering', 'Physics'], sorted(mapping[12]['groups']))
+
+            self.assertEqual('Bachelors: Film & Media Studies', mapping[30]['major'])
+            self.assertEqual(['Documentary/Film', 'Public Relations', 'Radio, Television, Media'],
+                             sorted(mapping[30]['groups']))

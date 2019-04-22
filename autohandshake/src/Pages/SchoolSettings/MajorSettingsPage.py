@@ -8,8 +8,6 @@ class MajorSettingsPage(Page):
 
     def __init__(self, browser: HandshakeBrowser):
         """
-        Load the major groups settings page from the school settings
-
         :param browser: a logged-in HandshakeBrowser
         :type browser: HandshakeBrowser
         """
@@ -40,7 +38,7 @@ class MajorSettingsPage(Page):
 
         return mappings
 
-    def validate_url(self, url):
+    def _validate_url(self, url):
         """
         Ensure that the given URL is a valid URL.
 
@@ -51,7 +49,7 @@ class MajorSettingsPage(Page):
         """
         return
 
-    def wait_until_page_is_loaded(self):
+    def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
         self._browser.wait_until_element_exists_by_xpath("//tbody/tr")
 

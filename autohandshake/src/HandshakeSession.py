@@ -9,17 +9,19 @@ class HandshakeSession:
     A Handshake browsing session.
 
     Should be used as a context manager. Example:
+    ::
 
-    with HandshakeSession("https://jhu.joinhandshake.edu", username, password) as hs:
-        [do something]
+        with HandshakeSession(school_url, email, password) as browser:
+            # do something
 
+    IMPORTANT: do not store your Handshake password as plain text under any
+    circumstances. I recommend entering your password each time you create a HandshakeSession
+    using a GUI or the console, via `getpass <https://docs.python.org/3.7/library/getpass.html>`_ or similar.
     """
 
     def __init__(self, login_url: str, email: str, password: str,
                  max_wait_time: int = MAX_WAIT_TIME):
         """
-        Initialize Handshake session.
-
         :param login_url: a valid Handshake homepage url of the form
                           "https://[school].joinhandshake.com"
         :type login_url: str
@@ -37,7 +39,12 @@ class HandshakeSession:
         self._browser = HandshakeBrowser(max_wait_time=max_wait_time)
 
     def __enter__(self) -> HandshakeBrowser:
-        """Open a web browser and log into Handshake, beginning the session"""
+        """
+        Open a web browser and log into Handshake, beginning the session
+
+        :returns: a logged-in HandshakeBrowser
+        :rtype: HandshakeBrowser
+        """
         self._browser.get(self._login_url)
         if self._school_is_invalid():
             raise InvalidURLError('Invalid school in login URL')

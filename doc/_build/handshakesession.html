@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <title>HandshakeSession &#8212; autohandshake 1.0.3 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css"/>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css"/>
+    <script type="text/javascript" id="documentation_options" data-url_root="./"
+            src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html"/>
+    <link rel="search" title="Search" href="search.html"/>
+    <link rel="next" title="HandshakeBrowser" href="handshakebrowser.html"/>
+    <link rel="prev" title="Getting Started" href="gettingstarted.html"/>
+</head>
+<body>
+<div class="related" role="navigation" aria-label="related navigation">
+    <h3>Navigation</h3>
+    <ul>
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index"
+               accesskey="I">index</a></li>
+        <li class="right">
+            <a href="py-modindex.html" title="Python Module Index"
+            >modules</a> |
+        </li>
+        <li class="right">
+            <a href="handshakebrowser.html" title="HandshakeBrowser"
+               accesskey="N">next</a> |
+        </li>
+        <li class="right">
+            <a href="gettingstarted.html" title="Getting Started"
+               accesskey="P">previous</a> |
+        </li>
+        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.3 documentation</a> &#187;</li>
+    </ul>
+</div>
+
+<div class="document">
+    <div class="documentwrapper">
+        <div class="bodywrapper">
+            <div class="body" role="main">
+
+                <div class="section" id="module-autohandshake">
+                    <span id="handshakesession"></span>
+                    <h1>HandshakeSession<a class="headerlink" href="#module-autohandshake"
+                                           title="Permalink to this headline">¶</a></h1>
+                    <dl class="class">
+                        <dt id="autohandshake.HandshakeSession">
+                            <em class="property">class </em><code class="descclassname">autohandshake.</code><code
+                                class="descname">HandshakeSession</code><span class="sig-paren">(</span><em>login_url:
+                            str</em>, <em>email: str</em>, <em>password: str</em>, <em>max_wait_time: int =
+                            300</em><span class="sig-paren">)</span><a class="headerlink"
+                                                                       href="#autohandshake.HandshakeSession"
+                                                                       title="Permalink to this definition">¶</a></dt>
+                        <dd><p>A Handshake browsing session.</p>
+                            <p>Should be used as a context manager. Example:</p>
+                            <div class="highlight-default notranslate">
+                                <div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HandshakeSession</span><span
+                                        class="p">(</span><span class="n">school_url</span><span
+                                        class="p">,</span> <span class="n">email</span><span class="p">,</span> <span
+                                        class="n">password</span><span class="p">)</span> <span
+                                        class="k">as</span> <span class="n">browser</span><span class="p">:</span>
+    <span class="c1"># do something</span>
+</pre>
+                                </div>
+                            </div>
+                            <p>IMPORTANT: do not store your Handshake password as plain text under any
+                                circumstances. I recommend entering your password each time you create a
+                                HandshakeSession
+                                using a GUI or the console, via <a class="reference external"
+                                                                   href="https://docs.python.org/3.7/library/getpass.html">getpass</a>
+                                or similar.</p>
+                            <dl class="field-list simple">
+                                <dt class="field-odd">Parameters</dt>
+                                <dd class="field-odd">
+                                    <ul class="simple">
+                                        <li><p><strong>login_url</strong> (<em>str</em>) – a valid Handshake homepage
+                                            url of the form
+                                            “<a class="reference external" href="https://[school].joinhandshake.com">https://[school].joinhandshake.com</a>”
+                                        </p></li>
+                                        <li><p><strong>email</strong> (<em>str</em>) – a valid handshake admin email</p>
+                                        </li>
+                                        <li><p><strong>password</strong> (<em>str</em>) – the password associated with
+                                            the given email</p></li>
+                                        <li><p><strong>max_wait_time</strong> (<em>int</em>) – the maximum time to wait
+                                            for something to load
+                                            before throwing a timeout error</p></li>
+                                    </ul>
+                                </dd>
+                            </dl>
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeSession.__enter__">
+                                    <code class="descname">__enter__</code><span class="sig-paren">(</span><span
+                                        class="sig-paren">)</span> &#x2192;
+                                    autohandshake.src.HandshakeBrowser.HandshakeBrowser<a class="headerlink"
+                                                                                          href="#autohandshake.HandshakeSession.__enter__"
+                                                                                          title="Permalink to this definition">¶</a>
+                                </dt>
+                                <dd><p>Open a web browser and log into Handshake, beginning the session</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Returns</dt>
+                                        <dd class="field-odd"><p>a logged-in HandshakeBrowser</p>
+                                        </dd>
+                                        <dt class="field-even">Return type</dt>
+                                        <dd class="field-even"><p><a class="reference internal"
+                                                                     href="handshakebrowser.html#autohandshake.HandshakeBrowser"
+                                                                     title="autohandshake.HandshakeBrowser">HandshakeBrowser</a>
+                                        </p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeSession.__exit__">
+                                    <code class="descname">__exit__</code><span
+                                        class="sig-paren">(</span><em>exc_type</em>, <em>exc_val</em>,
+                                    <em>exc_tb</em><span class="sig-paren">)</span><a class="headerlink"
+                                                                                      href="#autohandshake.HandshakeSession.__exit__"
+                                                                                      title="Permalink to this definition">¶</a>
+                                </dt>
+                                <dd><p>Close the web browser</p>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeSession.close">
+                                    <code class="descname">close</code><span class="sig-paren">(</span><span
+                                        class="sig-paren">)</span><a class="headerlink"
+                                                                     href="#autohandshake.HandshakeSession.close"
+                                                                     title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Close the Handshake Session.</p>
+                                    <p>To be called if HandshakeSession is <em>not</em> used as a context manager.</p>
+                                </dd>
+                            </dl>
+
+                        </dd>
+                    </dl>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="gettingstarted.html"
+                                  title="previous chapter">Getting Started</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="handshakebrowser.html"
+                                  title="next chapter">HandshakeBrowser</a></p>
+            <div role="note" aria-label="source link">
+                <h3>This Page</h3>
+                <ul class="this-page-menu">
+                    <li><a href="_sources/handshakesession.rst.txt"
+                           rel="nofollow">Show Source</a></li>
+                </ul>
+            </div>
+            <div id="searchbox" style="display: none" role="search">
+                <h3>Quick search</h3>
+                <div class="searchformwrapper">
+                    <form class="search" action="search.html" method="get">
+                        <input type="text" name="q"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+    </div>
+    <div class="clearer"></div>
+</div>
+<div class="related" role="navigation" aria-label="related navigation">
+    <h3>Navigation</h3>
+    <ul>
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index"
+            >index</a></li>
+        <li class="right">
+            <a href="py-modindex.html" title="Python Module Index"
+            >modules</a> |
+        </li>
+        <li class="right">
+            <a href="handshakebrowser.html" title="HandshakeBrowser"
+            >next</a> |
+        </li>
+        <li class="right">
+            <a href="gettingstarted.html" title="Getting Started"
+            >previous</a> |
+        </li>
+        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.3 documentation</a> &#187;</li>
+    </ul>
+</div>
+<div class="footer" role="contentinfo">
+    &#169; Copyright 2019, Christopher Edwards.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+</div>
+</body>
+</html>

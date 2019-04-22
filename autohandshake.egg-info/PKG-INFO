@@ -1,0 +1,45 @@
+Metadata-Version: 1.1
+Name: autohandshake
+Version: 1.0.1
+Summary: A library for automating tasks on the Handshake career services platform
+Home-page: https://github.com/cedwards036/autohandshake
+Author: Christopher Edwards
+Author-email: cedwards036@gmail.com
+License: MIT
+Description: =============
+        AutoHandshake
+        =============
+        
+        A library for automating tasks on the Handshake career services platform.
+        
+        Current functionality includes the automation of:
+        
+        * Getting data from Insights
+        
+        * Getting a complete record of your school's appointment type settings
+        
+        * Getting a complete record of your school's major mappings
+        
+        * Getting unfilled appoinment slot data from the appointment calendar
+        
+        * Getting account access request data
+        
+        Typical usage looks like::
+        
+            #!/usr/bin/env python
+        
+            from autohandshake import HandshakeSession, InsightsPage
+        
+            school_url = 'https://jhu.joinhandshake.edu'
+        
+            with HandshakeSession(login_url=school_url, email=your_email, password=your_password) as browser:
+                insights = InsightsPage(link_to_insights_report, browser)
+                report_data = insights.get_data()
+        
+        **Important**: this package relies on an automated driver for Google Chrome, so users must have Chrome installed in order
+        to use this package.
+        
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6

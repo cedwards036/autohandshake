@@ -15,7 +15,17 @@ DEFAULT_WAIT_TIME = 300
 
 
 class FileType(Enum):
-    """The possible download file types in Insights"""
+    """
+    The possible download file types in Insights
+
+            * EXCEL - an excel file with a .xlsx extension
+            * TXT - a tab-separated .txt file
+            * JSON - a json file with a .json extension
+            * HTML - a .html file that can render the data table in a browser
+            * MARKDOWN - a .md file that renders the table in markdown
+            * PNG - a .png image of the data table
+            * CSV - a comma-separated .csv file
+    """
     EXCEL = 'xlsx'
     TXT = 'txt'
     JSON = 'json'
@@ -237,8 +247,6 @@ class InsightsPage(Page):
 
     def __init__(self, url_string: str, browser: HandshakeBrowser):
         """
-        Load the insights page specified by either the full URL or the query string
-
         :param url_string: either a full insights URL or just the alphanumeric
                            query string specifying the exact report
         :type url_string: str
@@ -347,8 +355,7 @@ class InsightsPage(Page):
         self._browser.send_text_to_element_by_xpath(start_xpath, (BACKSPACE_KEY * 10) + start_date_str + ENTER_KEY * 2)
         self._browser.send_text_to_element_by_xpath(end_xpath, (BACKSPACE_KEY * 10) + end_date_str + ENTER_KEY * 2)
 
-
-    def validate_url(self, url):
+    def _validate_url(self, url):
         """
         Ensure that url string given is either a valid Insights URL or a valid
         Insights query string.
@@ -366,7 +373,7 @@ class InsightsPage(Page):
             except AttributeError:
                 raise InvalidURLError()
 
-    def wait_until_page_is_loaded(self):
+    def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
         self._switch_to_looker_iframe()
 

@@ -12,8 +12,6 @@ class LoginPage(Page):
 
     def __init__(self, url: str, browser: HandshakeBrowser):
         """
-        Create a login page object for the given login page URL
-
         :param url: the url of the school's Handshake login page
         :type url: str
         :param browser: a HandshakeBrowser that has not logged in yet
@@ -22,14 +20,14 @@ class LoginPage(Page):
         super().__init__(url, browser)
         self.validate_url_school()
 
-    def wait_until_page_is_loaded(self):
+    def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading.
 
         Return immediately since there are no complex load conditions
         """
         return
 
-    def validate_url(self, url):
+    def _validate_url(self, url):
         """
         Ensure that the given URL is a valid login URL
 

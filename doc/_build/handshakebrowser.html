@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <title>HandshakeBrowser &#8212; autohandshake 1.0.3 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css"/>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css"/>
+    <script type="text/javascript" id="documentation_options" data-url_root="./"
+            src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html"/>
+    <link rel="search" title="Search" href="search.html"/>
+    <link rel="next" title="Pages" href="pages.html"/>
+    <link rel="prev" title="HandshakeSession" href="handshakesession.html"/>
+</head>
+<body>
+<div class="related" role="navigation" aria-label="related navigation">
+    <h3>Navigation</h3>
+    <ul>
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index"
+               accesskey="I">index</a></li>
+        <li class="right">
+            <a href="py-modindex.html" title="Python Module Index"
+            >modules</a> |
+        </li>
+        <li class="right">
+            <a href="pages.html" title="Pages"
+               accesskey="N">next</a> |
+        </li>
+        <li class="right">
+            <a href="handshakesession.html" title="HandshakeSession"
+               accesskey="P">previous</a> |
+        </li>
+        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.3 documentation</a> &#187;</li>
+    </ul>
+</div>
+
+<div class="document">
+    <div class="documentwrapper">
+        <div class="bodywrapper">
+            <div class="body" role="main">
+
+                <div class="section" id="module-autohandshake">
+                    <span id="handshakebrowser"></span>
+                    <h1>HandshakeBrowser<a class="headerlink" href="#module-autohandshake"
+                                           title="Permalink to this headline">¶</a></h1>
+                    <dl class="class">
+                        <dt id="autohandshake.HandshakeBrowser">
+                            <em class="property">class </em><code class="descclassname">autohandshake.</code><code
+                                class="descname">HandshakeBrowser</code><span class="sig-paren">(</span><em>max_wait_time:
+                            int = 300</em><span class="sig-paren">)</span><a class="headerlink"
+                                                                             href="#autohandshake.HandshakeBrowser"
+                                                                             title="Permalink to this definition">¶</a>
+                        </dt>
+                        <dd><p>An automated browser for navigating Handshake.</p>
+                            <p>Since a logged-in instance of this class is returned by HandshakeSession’s
+                                __enter__ method, it does not usually need to be manually instantiated. Additionally,
+                                for most use cases, the user only needs to pass a HandshakeBrowser object to
+                                a Page object, then let the Page’s methods do the heavy-lifting.</p>
+                            <p>For example, you almost never need to write:</p>
+                            <div class="highlight-default notranslate">
+                                <div class="highlight"><pre><span></span><span class="n">browser</span> <span class="o">=</span> <span
+                                        class="n">HandshakeBrowser</span><span class="p">()</span>
+</pre>
+                                </div>
+                            </div>
+                            <p>The vast majority of use cases look something like:</p>
+                            <div class="highlight-default notranslate">
+                                <div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HandshakeSession</span><span
+                                        class="p">(</span><span class="n">school_url</span><span
+                                        class="p">,</span> <span class="n">email</span><span class="p">,</span> <span
+                                        class="n">password</span><span class="p">)</span> <span
+                                        class="k">as</span> <span class="n">browser</span><span class="p">:</span>
+    <span class="n">some_page</span> <span class="o">=</span> <span class="n">SomePage</span><span
+                                            class="p">(</span><span class="n">browser</span><span class="p">)</span>
+    <span class="n">some_page</span><span class="o">.</span><span class="n">do_something</span><span class="p">()</span>
+</pre>
+                                </div>
+                            </div>
+                            <p>If you need to specify a custom max_wait_time, that can be done through the
+                                HandshakeSession object:</p>
+                            <div class="highlight-default notranslate">
+                                <div class="highlight"><pre><span></span><span class="c1"># this</span>
+<span class="k">with</span> <span class="n">HandshakeSession</span><span class="p">(</span><span
+                                            class="n">school_url</span><span class="p">,</span> <span
+                                            class="n">email</span><span class="p">,</span> <span
+                                            class="n">password</span><span class="p">,</span> <span class="n">max_wait_time</span> <span
+                                            class="o">=</span> <span class="mi">60</span><span class="p">)</span> <span
+                                            class="k">as</span> <span class="n">browser</span><span class="p">:</span>
+    <span class="n">some_page</span> <span class="o">=</span> <span class="n">SomePage</span><span
+                                            class="p">(</span><span class="n">browser</span><span class="p">)</span>
+
+<span class="c1"># not this</span>
+<span class="n">browser</span> <span class="o">=</span> <span class="n">HandshakeBrowser</span><span
+                                            class="p">(</span><span class="n">max_wait_time</span> <span
+                                            class="o">=</span> <span class="mi">60</span><span class="p">)</span>
+</pre>
+                                </div>
+                            </div>
+                            <dl class="field-list simple">
+                                <dt class="field-odd">Parameters</dt>
+                                <dd class="field-odd"><p><strong>max_wait_time</strong> (<em>int</em>) – the maximum
+                                    time (in seconds) to wait for an element
+                                    to load before throwing a timeout error</p>
+                                </dd>
+                            </dl>
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.click_element_by_xpath">
+                                    <code class="descname">click_element_by_xpath</code><span class="sig-paren">(</span><em>xpath</em><span
+                                        class="sig-paren">)</span><a class="headerlink"
+                                                                     href="#autohandshake.HandshakeBrowser.click_element_by_xpath"
+                                                                     title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Click an element on the page given its xpath</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd"><p><strong>xpath</strong> (<em>str</em>) – the xpath of
+                                            the element to click</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="attribute">
+                                <dt id="autohandshake.HandshakeBrowser.current_url">
+                                    <code class="descname">current_url</code><a class="headerlink"
+                                                                                href="#autohandshake.HandshakeBrowser.current_url"
+                                                                                title="Permalink to this definition">¶</a>
+                                </dt>
+                                <dd><p>Get the url of the browser’s current page</p>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.element_exists_by_xpath">
+                                    <code class="descname">element_exists_by_xpath</code><span
+                                        class="sig-paren">(</span><em>xpath: str</em><span class="sig-paren">)</span>
+                                    &#x2192; bool<a class="headerlink"
+                                                    href="#autohandshake.HandshakeBrowser.element_exists_by_xpath"
+                                                    title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Determine whether or not an element with the given xpath exists in the page.</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd"><p><strong>xpath</strong> (<em>str</em>) – the xpath of
+                                            the element to search for</p>
+                                        </dd>
+                                        <dt class="field-even">Returns</dt>
+                                        <dd class="field-even"><p>True if the element exists, false otherwise</p>
+                                        </dd>
+                                        <dt class="field-odd">Return type</dt>
+                                        <dd class="field-odd"><p>bool</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.element_is_selected_by_xpath">
+                                    <code class="descname">element_is_selected_by_xpath</code><span
+                                        class="sig-paren">(</span><em>xpath: str</em><span class="sig-paren">)</span>
+                                    &#x2192; bool<a class="headerlink"
+                                                    href="#autohandshake.HandshakeBrowser.element_is_selected_by_xpath"
+                                                    title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Get whether or not the element specified by the given xpath is selected</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd"><p><strong>xpath</strong> (<em>str</em>) – the xpath of
+                                            the elements of interest</p>
+                                        </dd>
+                                        <dt class="field-even">Returns</dt>
+                                        <dd class="field-even"><p>True if the element is selected, False otherwise</p>
+                                        </dd>
+                                        <dt class="field-odd">Return type</dt>
+                                        <dd class="field-odd"><p>bool</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.execute_script_on_element_by_xpath">
+                                    <code class="descname">execute_script_on_element_by_xpath</code><span
+                                        class="sig-paren">(</span><em>script: str</em>, <em>xpath: str = None</em><span
+                                        class="sig-paren">)</span><a class="headerlink"
+                                                                     href="#autohandshake.HandshakeBrowser.execute_script_on_element_by_xpath"
+                                                                     title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Execute the given javascript expression. If xpath of element is provided,
+                                    the element becomes available to use in the script, and can be accessed
+                                    using arguments[0].</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd">
+                                            <ul class="simple">
+                                                <li><p><strong>script</strong> (<em>str</em>) – the javascript to be
+                                                    executed</p></li>
+                                                <li><p><strong>xpath</strong> (<em>str</em>) – the xpath of the optional
+                                                    element to be passed to the script</p></li>
+                                            </ul>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.get">
+                                    <code class="descname">get</code><span class="sig-paren">(</span><em>url:
+                                    str</em><span class="sig-paren">)</span><a class="headerlink"
+                                                                               href="#autohandshake.HandshakeBrowser.get"
+                                                                               title="Permalink to this definition">¶</a>
+                                </dt>
+                                <dd><p>Go to the web page specified by the given Handshake url.</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd"><p><strong>url</strong> (<em>str</em>) – the url to visit.
+                                            Must be of the form
+                                            “<a class="reference external" href="https://[...].joinhandshake.com[/">https://[…].joinhandshake.com[/</a>…]”
+                                        </p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.get_element_attribute_by_xpath">
+                                    <code class="descname">get_element_attribute_by_xpath</code><span class="sig-paren">(</span><em>xpath:
+                                    str</em>, <em>attribute: str</em><span class="sig-paren">)</span> &#x2192; str<a
+                                        class="headerlink"
+                                        href="#autohandshake.HandshakeBrowser.get_element_attribute_by_xpath"
+                                        title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Get the value of the given attribute from the element with the given xpath</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd">
+                                            <ul class="simple">
+                                                <li><p><strong>xpath</strong> (<em>str</em>) – the xpath of the element
+                                                    of interest</p></li>
+                                                <li><p><strong>attribute</strong> (<em>str</em>) – the name of the
+                                                    attribute of interest, e.g. ‘value’</p></li>
+                                            </ul>
+                                        </dd>
+                                        <dt class="field-even">Returns</dt>
+                                        <dd class="field-even"><p>the value of the attribute on the element of
+                                            interest</p>
+                                        </dd>
+                                        <dt class="field-odd">Return type</dt>
+                                        <dd class="field-odd"><p>str</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.get_elements_attribute_by_xpath">
+                                    <code class="descname">get_elements_attribute_by_xpath</code><span
+                                        class="sig-paren">(</span><em>xpath: str</em>, <em>attribute: str</em><span
+                                        class="sig-paren">)</span> &#x2192; list<a class="headerlink"
+                                                                                   href="#autohandshake.HandshakeBrowser.get_elements_attribute_by_xpath"
+                                                                                   title="Permalink to this definition">¶</a>
+                                </dt>
+                                <dd><p>Get the value of a given attribute for all elements with the given xpath</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd">
+                                            <ul class="simple">
+                                                <li><p><strong>xpath</strong> (<em>str</em>) – the xpath of the elements
+                                                    of interest</p></li>
+                                                <li><p><strong>attribute</strong> (<em>str</em>) – the name of the
+                                                    attribute of interest, e.g. ‘value’</p></li>
+                                            </ul>
+                                        </dd>
+                                        <dt class="field-even">Returns</dt>
+                                        <dd class="field-even"><p>a list of values of the given attribute for each
+                                            matching element</p>
+                                        </dd>
+                                        <dt class="field-odd">Return type</dt>
+                                        <dd class="field-odd"><p>list</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.maximize_window">
+                                    <code class="descname">maximize_window</code><span class="sig-paren">(</span><span
+                                        class="sig-paren">)</span><a class="headerlink"
+                                                                     href="#autohandshake.HandshakeBrowser.maximize_window"
+                                                                     title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Maximize the browser window.</p>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.quit">
+                                    <code class="descname">quit</code><span class="sig-paren">(</span><span
+                                        class="sig-paren">)</span><a class="headerlink"
+                                                                     href="#autohandshake.HandshakeBrowser.quit"
+                                                                     title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Close the browser</p>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.record_school_id">
+                                    <code class="descname">record_school_id</code><span class="sig-paren">(</span><span
+                                        class="sig-paren">)</span><a class="headerlink"
+                                                                     href="#autohandshake.HandshakeBrowser.record_school_id"
+                                                                     title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Record the school’s Handshake ID from a link in the main sidebar</p>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.return_to_main_tab">
+                                    <code class="descname">return_to_main_tab</code><span
+                                        class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink"
+                                                                                                     href="#autohandshake.HandshakeBrowser.return_to_main_tab"
+                                                                                                     title="Permalink to this definition">¶</a>
+                                </dt>
+                                <dd><p>With a second tab open, close the current tab and return to the main tab.</p>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.send_text_to_element_by_xpath">
+                                    <code class="descname">send_text_to_element_by_xpath</code><span
+                                        class="sig-paren">(</span><em>xpath: str</em>, <em>text: str</em>, <em>clear:
+                                    bool = True</em><span class="sig-paren">)</span><a class="headerlink"
+                                                                                       href="#autohandshake.HandshakeBrowser.send_text_to_element_by_xpath"
+                                                                                       title="Permalink to this definition">¶</a>
+                                </dt>
+                                <dd><p>Send a string to an input field identified by the given xpath</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd">
+                                            <ul class="simple">
+                                                <li><p><strong>text</strong> (<em>str</em>) – the text to send</p></li>
+                                                <li><p><strong>xpath</strong> (<em>str</em>) – the xpath of the input
+                                                    field to which to send the text</p></li>
+                                                <li><p><strong>clear</strong> (<em>bool</em>) – whether or not to clear
+                                                    the field before sending text. If
+                                                    False, text will be appended to any text already present.</p></li>
+                                            </ul>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.switch_to_new_tab">
+                                    <code class="descname">switch_to_new_tab</code><span class="sig-paren">(</span><span
+                                        class="sig-paren">)</span><a class="headerlink"
+                                                                     href="#autohandshake.HandshakeBrowser.switch_to_new_tab"
+                                                                     title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Wait for the new tab to finish loaded, then switch to it.</p>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.wait_then_click_element_by_xpath">
+                                    <code class="descname">wait_then_click_element_by_xpath</code><span
+                                        class="sig-paren">(</span><em>xpath</em><span class="sig-paren">)</span><a
+                                        class="headerlink"
+                                        href="#autohandshake.HandshakeBrowser.wait_then_click_element_by_xpath"
+                                        title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Click an element on the page given its xpath after waiting to make sure
+                                    it exists</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd"><p><strong>xpath</strong> (<em>str</em>) – the xpath of
+                                            the element to click</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.wait_until_element_does_not_exist_by_xpath">
+                                    <code class="descname">wait_until_element_does_not_exist_by_xpath</code><span
+                                        class="sig-paren">(</span><em>xpath: str</em><span class="sig-paren">)</span><a
+                                        class="headerlink"
+                                        href="#autohandshake.HandshakeBrowser.wait_until_element_does_not_exist_by_xpath"
+                                        title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Wait until an element with the given xpath exists on the page.</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd"><p><strong>xpath</strong> (<em>str</em>) – the xpath of
+                                            the element to wait for</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.wait_until_element_exists_by_xpath">
+                                    <code class="descname">wait_until_element_exists_by_xpath</code><span
+                                        class="sig-paren">(</span><em>xpath: str</em><span class="sig-paren">)</span><a
+                                        class="headerlink"
+                                        href="#autohandshake.HandshakeBrowser.wait_until_element_exists_by_xpath"
+                                        title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Wait until an element with the given xpath exists on the page.</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd"><p><strong>xpath</strong> (<em>str</em>) – the xpath of
+                                            the element to wait for</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                            <dl class="method">
+                                <dt id="autohandshake.HandshakeBrowser.wait_until_element_is_clickable_by_xpath">
+                                    <code class="descname">wait_until_element_is_clickable_by_xpath</code><span
+                                        class="sig-paren">(</span><em>xpath: str</em><span class="sig-paren">)</span><a
+                                        class="headerlink"
+                                        href="#autohandshake.HandshakeBrowser.wait_until_element_is_clickable_by_xpath"
+                                        title="Permalink to this definition">¶</a></dt>
+                                <dd><p>Wait until an element with the given xpath is clickable.</p>
+                                    <dl class="field-list simple">
+                                        <dt class="field-odd">Parameters</dt>
+                                        <dd class="field-odd"><p><strong>xpath</strong> (<em>str</em>) – the xpath of
+                                            the element to wait for</p>
+                                        </dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+
+                        </dd>
+                    </dl>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="handshakesession.html"
+                                  title="previous chapter">HandshakeSession</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="pages.html"
+                                  title="next chapter">Pages</a></p>
+            <div role="note" aria-label="source link">
+                <h3>This Page</h3>
+                <ul class="this-page-menu">
+                    <li><a href="_sources/handshakebrowser.rst.txt"
+                           rel="nofollow">Show Source</a></li>
+                </ul>
+            </div>
+            <div id="searchbox" style="display: none" role="search">
+                <h3>Quick search</h3>
+                <div class="searchformwrapper">
+                    <form class="search" action="search.html" method="get">
+                        <input type="text" name="q"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+    </div>
+    <div class="clearer"></div>
+</div>
+<div class="related" role="navigation" aria-label="related navigation">
+    <h3>Navigation</h3>
+    <ul>
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index"
+            >index</a></li>
+        <li class="right">
+            <a href="py-modindex.html" title="Python Module Index"
+            >modules</a> |
+        </li>
+        <li class="right">
+            <a href="pages.html" title="Pages"
+            >next</a> |
+        </li>
+        <li class="right">
+            <a href="handshakesession.html" title="HandshakeSession"
+            >previous</a> |
+        </li>
+        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.3 documentation</a> &#187;</li>
+    </ul>
+</div>
+<div class="footer" role="contentinfo">
+    &#169; Copyright 2019, Christopher Edwards.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+</div>
+</body>
+</html>

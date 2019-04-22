@@ -11,7 +11,14 @@ import re
 
 
 class RequestStatus(Enum):
-    """The possible access request statuses"""
+    """The possible access request statuses:
+
+            * WAITING - requests that have not yet been processed
+            * SUCCESSFUL - requests that were approved
+            * REJECTED - requests that were rejected
+            * FAILED - requests that failed for other reasons
+            * ALL - include all request statuses
+    """
     WAITING = 'Waiting'
     SUCCESSFUL = 'Successful'
     REJECTED = 'Rejected'
@@ -24,8 +31,6 @@ class AccessRequestPage(Page):
 
     def __init__(self, browser: HandshakeBrowser):
         """
-        Load the Handshake account access request page
-
         :param browser: a logged-in HandshakeBrowser
         :type browser: HandshakeBrowser
         """
@@ -36,17 +41,15 @@ class AccessRequestPage(Page):
         Scrape access request data from the access request page for the specified request status.
 
         Data will be returned as a list of dicts of the form:
-
-        {
-            'user': [the requesting user's name],
-            'user_id': [the requesting user's Handshake ID],
-            'email': [the requesting user's email address],
-            'request_date': [the date on which the request was submitted],
-            'request': [the type of the request, either 'Student Access',
-                        'Student Reactivation', or 'Mentor Access'],
-            'status': [the request status, one of 'waiting', 'successful',
-                       'rejected', or 'failed']
-        }
+        ::
+            {
+                'user': 'Alex Student', # the requesting user's name
+                'user_id': '1843927', # the requesting user's account ID
+                'email': 'student.alex@gmail.com', # the requesting user's email
+                'request_date': datetime.datetime(2019, 4, 12).date(), # the date the request was made
+                'request': 'Student Access' # the request type, one of 'Student Access', 'Student Reactivation', or 'Mentor Access'],
+                'status': 'waiting' # the request status, one of 'waiting', 'successful', 'rejected', or 'failed'
+            }
 
         IMPORTANT: due to unknown limitations of Handshake's server, the request
         page appears to only be capable of loading up to around 1750 rows before
@@ -104,7 +107,7 @@ class AccessRequestPage(Page):
             request_data.append(data_row)
         return request_data
 
-    def validate_url(self, url):
+    def _validate_url(self, url):
         """
         Ensure that the given URL is a valid URL.
 
@@ -115,7 +118,7 @@ class AccessRequestPage(Page):
         """
         return
 
-    def wait_until_page_is_loaded(self):
+    def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
         for status in RequestStatus:
             self._browser.wait_until_element_is_clickable_by_xpath(
