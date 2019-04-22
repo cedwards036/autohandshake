@@ -2,6 +2,7 @@ AutoHandshake
 =============
 
 .. image:: https://readthedocs.org/projects/autohandshake/badge/?version=latest
+
 :target: https://autohandshake.readthedocs.io/en/latest/?badge=latest
 :alt: Documentation Status
 
@@ -39,4 +40,4 @@ Typical usage looks like:
 
 Documentation
 -------------
-You will find complete documentation at [the Read the Docs site](https://autohandshake.readthedocs.io/en/latest/).
+You will find complete documentation at `the Read the Docs site <https://autohandshake.readthedocs.io/en/latest/>`_.
