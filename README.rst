@@ -2,9 +2,8 @@ AutoHandshake
 =============
 
 .. image:: https://readthedocs.org/projects/autohandshake/badge/?version=latest
-
-:target: https://autohandshake.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
+  :target: https://autohandshake.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation Status
 
 Installation
 ------------
