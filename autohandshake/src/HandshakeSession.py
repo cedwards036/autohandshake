@@ -28,7 +28,8 @@ class HandshakeSession:
                          password is not specified, HandshakeSession will instead
                          look for a password associated with the given login_url
                          and email within the machine's default password manager
-                         (e.g. Windows Credential Manager, macOS Keychain, etc.)
+                         (e.g. Windows Credential Manager, macOS Keychain, etc.).
+                         **This is the preferred usage**, since it is more secure.
         :type password: str
         :param max_wait_time: the maximum time to wait for something to load
                               before throwing a timeout error

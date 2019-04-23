@@ -1,6 +1,7 @@
 CHANGES.txt
 MANIFEST.in
-README.txt
+README.rst
+requirements.txt
 setup.py
 autohandshake/__init__.py
 autohandshake/chromedriver.exe

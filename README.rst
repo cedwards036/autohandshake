@@ -30,7 +30,7 @@ Typical usage looks like:
 
     school_url = 'https://jhu.joinhandshake.com'
 
-    with HandshakeSession(login_url=school_url, email=your_email, password=your_password) as browser:
+    with HandshakeSession(login_url=school_url, email=your_email) as browser:
         insights = InsightsPage(link_to_insights_report, browser)
         report_data = insights.get_data()
 

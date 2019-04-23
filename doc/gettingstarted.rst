@@ -10,10 +10,20 @@ session on the Handshake platform. Instantiating the class using a "with" statem
 will log you into Handshake and plop you on the homepage. From there, you can use the various `Pages <./pages.html>`_  to perform
 actions on different webpages within Handshake.
 
+While you have the option to pass a password to HandshakeSession's constructor, this is not recommended for security reasons.
+Autohandshake uses `keyring <https://pypi.org/project/keyring/#installing-and-using-python-keyring-lib>`_ to hook into your computer's default password management system (e.g. Windows Credential
+Manager, macOS Keychain, etc.). To take advantage of this feature, you should set up your handshake password in your preferred
+password system using your school's login url as the "system/service" and your Handshake email address as the "username."
+For example, the code below assumes the existence of a password manager entry for the url "https://jhu.joinhandshake.com"
+and the username "staff342@jhu.edu."
+
 Example:
 ::
 
-    with HandshakeSession(school_url, email, password) as browser:
+    school_url = 'https://jhu.joinhandshake.com'
+    email = 'staff342@jhu.edu'
+
+    with HandshakeSession(school_url, email) as browser:
         # do something
 
 Pages
@@ -39,7 +49,7 @@ Example:
 
     appts_by_status_report = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vYXBwb2ludG1lbnRzP3FpZD1pcDFLd0ZlSmh4VVdobXYxa212U2xuJmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
 
-    with HandshakeBrowser(school_url, email, password) as browser:
+    with HandshakeBrowser(school_url, email) as browser:
         insights_page = InsightsPage(appts_by_status_report, browser)
         insights_page.set_date_range_filter('Appointments', 'Start Date Date',
                                             start_date = datetime.datetime(2018, 1, 1),
@@ -52,7 +62,7 @@ the following will throw an error, since the first page is no longer active in t
 
     from autohandshake import HandshakeBrowser, MajorSettingsPage, AppointmentTypePage
 
-    with HandshakeBrowser(school_url, email, password) as browser:
+    with HandshakeBrowser(school_url, email) as browser:
         # load a page
         major_settings_page = MajorSettingsPage(browser)
         # load a second page

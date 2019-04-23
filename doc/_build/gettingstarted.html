@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title>Getting Started &#8212; autohandshake 1.0.3 documentation</title>
+    <title>Getting Started &#8212; autohandshake 1.0.7 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css"/>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css"/>
     <script type="text/javascript" id="documentation_options" data-url_root="./"
@@ -36,7 +37,7 @@
             <a href="installation.html" title="Installation"
                accesskey="P">previous</a> |
         </li>
-        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.7 documentation</a> &#187;</li>
     </ul>
 </div>
 
@@ -63,13 +64,30 @@
                             will log you into Handshake and plop you on the homepage. From there, you can use the
                             various <a class="reference external" href="./pages.html">Pages</a> to perform
                             actions on different webpages within Handshake.</p>
+                        <p>While you have the option to pass a password to HandshakeSession’s constructor, this is not
+                            recommended for security reasons.
+                            Autohandshake uses <a class="reference external"
+                                                  href="https://pypi.org/project/keyring/#installing-and-using-python-keyring-lib">keyring</a>
+                            to hook into your computer’s default password management system (e.g. Windows Credential
+                            Manager, macOS Keychain, etc.). To take advantage of this feature, you should set up your
+                            handshake password in your preferred
+                            password system using your school’s login url as the “system/service” and your Handshake
+                            email address as the “username.”
+                            For example, the code below assumes the existence of a password manager entry for the url
+                            “<a class="reference external" href="https://jhu.joinhandshake.com">https://jhu.joinhandshake.com</a>”
+                            and the username “<a class="reference external"
+                                                 href="mailto:staff342&#37;&#52;&#48;jhu&#46;edu">staff342<span>&#64;</span>jhu<span>&#46;</span>edu</a>.”
+                        </p>
                         <p>Example:</p>
                         <div class="highlight-default notranslate">
-                            <div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HandshakeSession</span><span
-                                    class="p">(</span><span class="n">school_url</span><span class="p">,</span> <span
-                                    class="n">email</span><span class="p">,</span> <span class="n">password</span><span
-                                    class="p">)</span> <span class="k">as</span> <span class="n">browser</span><span
-                                    class="p">:</span>
+                            <div class="highlight"><pre><span></span><span class="n">school_url</span> <span
+                                    class="o">=</span> <span class="s1">&#39;https://jhu.joinhandshake.com&#39;</span>
+<span class="n">email</span> <span class="o">=</span> <span class="s1">&#39;staff342@jhu.edu&#39;</span>
+
+<span class="k">with</span> <span class="n">HandshakeSession</span><span class="p">(</span><span
+                                        class="n">school_url</span><span class="p">,</span> <span class="n">email</span><span
+                                        class="p">)</span> <span class="k">as</span> <span class="n">browser</span><span
+                                        class="p">:</span>
     <span class="c1"># do something</span>
 </pre>
                             </div>
@@ -120,8 +138,8 @@
 
 <span class="k">with</span> <span class="n">HandshakeBrowser</span><span class="p">(</span><span
                                         class="n">school_url</span><span class="p">,</span> <span class="n">email</span><span
-                                        class="p">,</span> <span class="n">password</span><span class="p">)</span> <span
-                                        class="k">as</span> <span class="n">browser</span><span class="p">:</span>
+                                        class="p">)</span> <span class="k">as</span> <span class="n">browser</span><span
+                                        class="p">:</span>
     <span class="n">insights_page</span> <span class="o">=</span> <span class="n">InsightsPage</span><span
                                         class="p">(</span><span class="n">appts_by_status_report</span><span
                                         class="p">,</span> <span class="n">browser</span><span class="p">)</span>
@@ -153,8 +171,8 @@
 
 <span class="k">with</span> <span class="n">HandshakeBrowser</span><span class="p">(</span><span
                                         class="n">school_url</span><span class="p">,</span> <span class="n">email</span><span
-                                        class="p">,</span> <span class="n">password</span><span class="p">)</span> <span
-                                        class="k">as</span> <span class="n">browser</span><span class="p">:</span>
+                                        class="p">)</span> <span class="k">as</span> <span class="n">browser</span><span
+                                        class="p">:</span>
     <span class="c1"># load a page</span>
     <span class="n">major_settings_page</span> <span class="o">=</span> <span class="n">MajorSettingsPage</span><span
                                         class="p">(</span><span class="n">browser</span><span class="p">)</span>
@@ -232,7 +250,7 @@
             <a href="installation.html" title="Installation"
             >previous</a> |
         </li>
-        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">autohandshake 1.0.7 documentation</a> &#187;</li>
     </ul>
 </div>
 <div class="footer" role="contentinfo">
