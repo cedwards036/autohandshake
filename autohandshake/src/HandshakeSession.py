@@ -1,7 +1,8 @@
 from autohandshake.src import HandshakeBrowser
-from autohandshake.src.exceptions import InvalidURLError
+from autohandshake.src.exceptions import InvalidURLError, InvalidPasswordError
 from autohandshake.src.Pages.LoginPage import LoginPage
 from autohandshake.src.constants import MAX_WAIT_TIME
+import keyring
 
 
 class HandshakeSession:
@@ -11,23 +12,23 @@ class HandshakeSession:
     Should be used as a context manager. Example:
     ::
 
-        with HandshakeSession(school_url, email, password) as browser:
+        with HandshakeSession(school_url, email) as browser:
             # do something
 
-    IMPORTANT: do not store your Handshake password as plain text under any
-    circumstances. I recommend entering your password each time you create a HandshakeSession
-    using a GUI or the console, via `getpass <https://docs.python.org/3.7/library/getpass.html>`_ or similar.
     """
 
-    def __init__(self, login_url: str, email: str, password: str,
-                 max_wait_time: int = MAX_WAIT_TIME):
+    def __init__(self, login_url: str, email: str, password: str = None, max_wait_time: int = MAX_WAIT_TIME):
         """
         :param login_url: a valid Handshake homepage url of the form
                           "https://[school].joinhandshake.com"
         :type login_url: str
         :param email: a valid handshake admin email
         :type email: str
-        :param password: the password associated with the given email
+        :param password: the password associated with the given email. If
+                         password is not specified, HandshakeSession will instead
+                         look for a password associated with the given login_url
+                         and email within the machine's default password manager
+                         (e.g. Windows Credential Manager, macOS Keychain, etc.)
         :type password: str
         :param max_wait_time: the maximum time to wait for something to load
                               before throwing a timeout error
@@ -35,7 +36,13 @@ class HandshakeSession:
         """
         self._login_url = login_url
         self._email = email
-        self._password = password
+        if password:
+            self._password = password
+        else:
+            self._password = keyring.get_password(self._login_url, self._email)
+            if not self._password:
+                raise InvalidPasswordError("Keyring unable to find password for "
+                                           f"service {login_url} and user {email}")
         self._browser = HandshakeBrowser(max_wait_time=max_wait_time)
 
     def __enter__(self) -> HandshakeBrowser:
