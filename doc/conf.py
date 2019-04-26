@@ -12,9 +12,10 @@
 #
 import os
 import sys
-from autohandshake import __version__
 
 sys.path.insert(0, os.path.abspath('..'))
+
+from autohandshake import __version__
 
 # -- Project information -----------------------------------------------------
 
