@@ -79,7 +79,6 @@ class AccessRequestPage(Page):
         if pages_to_load > 69:
             pages_to_load = 69
         for i in range(pages_to_load):  # click "See More" btn until all rows loaded
-            print(i)
             self._browser.wait_until_element_exists_by_xpath(SEE_MORE_BTN_XPATH)
             self._browser.click_element_by_xpath(SEE_MORE_BTN_XPATH)
 

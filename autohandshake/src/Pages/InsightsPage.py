@@ -51,8 +51,8 @@ class _DownloadModal:
     def open(self):
         """Open the insights report download modal box."""
         if not self.is_open:
-            self._browser.click_element_by_xpath("//i[@class='lk-icon-gear']")
-            self._browser.click_element_by_xpath("//a[@ng-click='openDownloadDialog()']")
+            self._browser.wait_then_click_element_by_xpath("//i[@class='lk-icon-gear']")
+            self._browser.wait_then_click_element_by_xpath("//a[@ng-click='openDownloadDialog()']")
             self._browser.wait_until_element_is_clickable_by_xpath(
                 "//div[contains(@class, 'query-download-modal-limit')]")
             # click modal body to bring it into focus, allowing additional actions

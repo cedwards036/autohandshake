@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: autohandshake
-Version: 1.0.6.1
+Version: 1.0.7
 Summary: A library for automating tasks on the Handshake career services platform
 Home-page: https://github.com/cedwards036/autohandshake
 Author: Christopher Edwards
@@ -38,7 +38,7 @@ Description: AutoHandshake
         
             school_url = 'https://jhu.joinhandshake.com'
         
-            with HandshakeSession(login_url=school_url, email=your_email, password=your_password) as browser:
+            with HandshakeSession(login_url=school_url, email=your_email) as browser:
                 insights = InsightsPage(link_to_insights_report, browser)
                 report_data = insights.get_data()
         

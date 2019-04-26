@@ -1,6 +1,7 @@
 import pathlib
 
 from setuptools import setup, find_packages
+from autohandshake import __version__
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -11,7 +12,7 @@ README = (HERE / "README.rst").read_text()
 # This call to setup() does all the work
 setup(
     name="autohandshake",
-    version="1.0.7",
+    version=__version__,
     description="A library for automating tasks on the Handshake career services platform",
     long_description=README,
     url="https://github.com/cedwards036/autohandshake",
