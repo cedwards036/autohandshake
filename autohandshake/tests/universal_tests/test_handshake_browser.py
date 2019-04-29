@@ -1,13 +1,13 @@
 import unittest
 
-from autohandshake import HandshakeBrowser
+from autohandshake import HandshakeBrowser, UserType
 from autohandshake.src.exceptions import InvalidURLError, WrongPageForMethodError, \
     InsufficientPermissionsError
 from autohandshake.src.constants import BASE_URL
 from autohandshake.tests import TestSession
 
 
-class TestHandshakeBrowser(unittest.TestCase):
+class TestHandshakeBrowserMainFunctionality(unittest.TestCase):
 
     def test_throws_error_if_given_invalid_url(self):
         completely_wrong_url = "https://www.google.com/"
@@ -57,8 +57,36 @@ class TestHandshakeBrowser(unittest.TestCase):
 
         browser.quit()
 
-    def test_get_school_id_fails_on_invalid_page(self):
-        with self.assertRaises(WrongPageForMethodError):
-            browser = HandshakeBrowser()
-            browser.get(BASE_URL)
-            browser.record_school_id()
+
+class TestHandshakeBrowserUserTypes(unittest.TestCase):
+    """
+    This test suite assumes the testing user has all three account types available to switch to.
+    Additionally, each test assumes that the user is starting logged in as a career services
+    user.
+    """
+
+    def test_sets_user_type_to_correct_type_upon_login(self):
+        with TestSession() as browser:
+            self.assertEqual(UserType.STAFF, browser.user_type)
+
+    def test_switch_user_type_on_valid_page(self):
+        with TestSession() as browser:
+            self.assertEqual(UserType.STAFF, browser.user_type)
+            browser.switch_users(UserType.EMPLOYER)
+            self.assertEqual(UserType.EMPLOYER, browser.user_type)
+            browser.switch_users(UserType.STUDENT)
+            self.assertEqual(UserType.STUDENT, browser.user_type)
+            browser.switch_users(UserType.STAFF)
+            self.assertEqual(UserType.STAFF, browser.user_type)
+
+    def test_browser_registers_correct_user_type_on_login(self):
+        with TestSession() as browser:
+            self.assertEqual(UserType.STAFF, browser.user_type)
+            browser.switch_users(UserType.EMPLOYER)
+        with TestSession() as browser:
+            self.assertEqual(UserType.EMPLOYER, browser.user_type)
+            browser.switch_users(UserType.STUDENT)
+        with TestSession() as browser:
+            self.assertEqual(UserType.STUDENT, browser.user_type)
+            browser.switch_users(UserType.STAFF)
+            self.assertEqual(UserType.STAFF, browser.user_type)

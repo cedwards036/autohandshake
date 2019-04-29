@@ -3,12 +3,30 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from enum import Enum
 import re
 import os
 
-from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError, \
-    WrongPageForMethodError, InsufficientPermissionsError
+from autohandshake.src.exceptions import (
+    InvalidURLError, NoSuchElementError, WrongPageForMethodError,
+    InsufficientPermissionsError, InvalidUserTypeError
+)
 from autohandshake.src.constants import MAX_WAIT_TIME
+from autohandshake.src.constants import BASE_URL
+
+
+class UserType(Enum):
+    """
+    The possible user types in Handshake
+
+            * Employer - a Handshake employer account
+            * Staff - a career services staff/admin account
+            * Student - a student or alumni account
+    """
+
+    EMPLOYER = 'Employers'
+    STAFF = 'Career Services'
+    STUDENT = 'Students'
 
 
 class HandshakeBrowser:
@@ -26,7 +44,7 @@ class HandshakeBrowser:
 
     The vast majority of use cases look something like:
     ::
-        with HandshakeSession(school_url, email, password) as browser:
+        with HandshakeSession(school_url, email) as browser:
             some_page = SomePage(browser)
             some_page.do_something()
 
@@ -34,7 +52,7 @@ class HandshakeBrowser:
     HandshakeSession object:
     ::
         # this
-        with HandshakeSession(school_url, email, password, max_wait_time = 60) as browser:
+        with HandshakeSession(school_url, email, max_wait_time = 60) as browser:
             some_page = SomePage(browser)
 
         # not this
@@ -57,6 +75,7 @@ class HandshakeBrowser:
         self._browser = webdriver.Chrome(executable_path=driver_path,
                                          options=options)
         self.max_wait_time = max_wait_time
+        self._user_type = None
 
     def get(self, url: str):
         """Go to the web page specified by the given Handshake url.
@@ -247,17 +266,35 @@ class HandshakeBrowser:
         except NoSuchElementException:
             raise NoSuchElementError(f'No elements found for xpath: "{xpath}"')
 
-    def record_school_id(self):
-        """Record the school's Handshake ID from a link in the main sidebar"""
-        try:
-            full_href = self._browser.find_element_by_css_selector(
-                "a[href*='/schools/'").get_attribute('href')
-            final_slash_position = full_href.rfind(r'/')
-            school_id = full_href[final_slash_position + 1:]
-            self.school_id = school_id
-        except NoSuchElementException:
-            raise WrongPageForMethodError('The main sidebar must be visible in '
-                                          'order to get the school id')
+    def update_constants(self):
+        """
+        Update any Handshake environment constants such as School ID or User ID.
+
+        This should be done every time the browser switches user types and upon
+        initial login.
+        """
+        if self._user_type == UserType.EMPLOYER:
+            self.employer_id = self._get_meta_constant('logged_in_user_institution_id')
+        else:
+            self.school_id = self._get_meta_constant('logged_in_user_institution_id')
+        self.user_id = self._get_meta_constant('logged_in_user_id')
+        self._user_type = UserType(self._get_meta_constant('current_user_type'))
+
+    def _get_meta_constant(self, name: str) -> str:
+        """
+        Get the content of a meta tag with the given name.
+
+        The method is used to pull data like the current school id, user id,
+        or employer id from Handshake's <meta> tags. All tags are of the form:
+        <meta content="foo" name="bar">. Given "bar," this method returns "foo".
+
+        :param name: the name of the meta tag to query
+        :type name: str
+        :return: the content of the meta tag
+        :rtype: str
+        """
+        return self.get_element_attribute_by_xpath(f'//meta[@name="{name}"]',
+                                                   'content')
 
     def switch_to_new_tab(self):
         """Wait for the new tab to finish loaded, then switch to it."""
@@ -273,6 +310,29 @@ class HandshakeBrowser:
     def maximize_window(self):
         """Maximize the browser window."""
         self._browser.maximize_window()
+
+    @property
+    def user_type(self) -> UserType:
+        """
+        Get the user type of the account currently logged into Handshake.
+
+        :return: the browser's currently-logged-in user type
+        :rtype: UserType
+        """
+        return self._user_type
+
+    def switch_users(self, user_type: UserType):
+        """
+        Switch to the system view specified by the given user type.
+
+        This method automates the built-in "Switch Users" function in Handshake.
+
+        :param user_type: the user type to which to switch
+        :type user_type: UserType
+        """
+        self.get(f'{BASE_URL}/user_switcher/options')
+        self.click_element_by_xpath(f'//a[div[h4[contains(text(), "{user_type.value}")]]]')
+        self.update_constants()
 
     @property
     def current_url(self):

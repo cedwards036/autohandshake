@@ -58,7 +58,7 @@ class LoginPage(Page):
         """
         self._enter_email_address(email)
         self._enter_password(password)
-        self._browser.wait_until_element_exists_by_xpath("//span[text()='Student Activity Snapshot']")
+        self._browser.wait_until_element_exists_by_xpath('//div[@class="Select-placeholder"]')
 
     def _enter_email_address(self, email):
         """Enter email address into input field"""

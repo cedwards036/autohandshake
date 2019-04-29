@@ -31,3 +31,8 @@ class InvalidPasswordError(Exception):
 class InsufficientPermissionsError(Exception):
     """Raised when HandshakeBrowser attempts to access a page for which the user has insufficient permissions"""
     pass
+
+
+class InvalidUserTypeError(Exception):
+    """Raised when the browser attempts to do something while logged in as the wrong user type"""
+    pass

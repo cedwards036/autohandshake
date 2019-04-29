@@ -2,6 +2,7 @@ from autohandshake.src import (
     # main classes
     HandshakeSession,
     HandshakeBrowser,
+    UserType,
 
     # pages
     AccessRequestPage,

@@ -59,7 +59,7 @@ class HandshakeSession:
         # try to log in via the new style of login page if the old one fails
         login_page = LoginPage(self._login_url, self._browser)
         login_page.login(self._email, self._password)
-        self._browser.record_school_id()
+        self._browser.update_constants()
         return self._browser
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -86,6 +86,3 @@ class HandshakeSession:
         return self._browser.element_exists_by_xpath('//span[text()=\'Please '
                                                      'select your school to '
                                                      'sign in.\']')
-
-    def _get_school_id(self) -> int:
-        """Once on the homepage after logging in, get the id of the school."""

@@ -3,6 +3,7 @@ MANIFEST.in
 README.rst
 requirements.txt
 setup.py
+autohandshake/__about__.py
 autohandshake/__init__.py
 autohandshake/chromedriver.exe
 autohandshake.egg-info/PKG-INFO
