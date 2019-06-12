@@ -1,5 +1,5 @@
 from autohandshake.src.Pages import Page
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
 from autohandshake.src.constants import BASE_URL
 from bs4 import BeautifulSoup
 from enum import Enum
@@ -27,7 +27,11 @@ class RequestStatus(Enum):
 
 
 class AccessRequestPage(Page):
-    """The page on which users view and respond to Handshake access requests."""
+    """
+    The page on which users view and respond to Handshake access requests.
+
+    Can only be accessed with a Career Services/admin-style account.
+    """
 
     def __init__(self, browser: HandshakeBrowser):
         """
@@ -36,6 +40,7 @@ class AccessRequestPage(Page):
         """
         super().__init__(f'{BASE_URL}/email_actions', browser)
 
+    @Page.require_user_type(UserType.STAFF)
     def get_request_data(self, status: RequestStatus = RequestStatus.ALL) -> List[dict]:
         """
         Scrape access request data from the access request page for the specified request status.

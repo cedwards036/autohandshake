@@ -1,10 +1,11 @@
 import unittest
 
 from autohandshake import HandshakeBrowser, UserType
-from autohandshake.src.exceptions import InvalidURLError, WrongPageForMethodError, \
+from autohandshake.src.exceptions import InvalidURLError, InvalidUserTypeError, \
     InsufficientPermissionsError
 from autohandshake.src.constants import BASE_URL
 from autohandshake.tests import TestSession
+from enum import Enum
 
 
 class TestHandshakeBrowserMainFunctionality(unittest.TestCase):
@@ -90,3 +91,12 @@ class TestHandshakeBrowserUserTypes(unittest.TestCase):
             self.assertEqual(UserType.STUDENT, browser.user_type)
             browser.switch_users(UserType.STAFF)
             self.assertEqual(UserType.STAFF, browser.user_type)
+
+    def test_browser_throws_error_if_user_type_is_not_avaialble(self):
+        class FakeUserType(Enum):
+            FAKE_TYPE = 'not a type'
+
+        with self.assertRaises(InvalidUserTypeError):
+            with TestSession() as browser:
+                self.assertEqual(UserType.STAFF, browser.user_type)
+                browser.switch_users(FakeUserType.FAKE_TYPE)

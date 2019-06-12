@@ -330,8 +330,13 @@ class HandshakeBrowser:
         :param user_type: the user type to which to switch
         :type user_type: UserType
         """
+        if self._user_type == user_type:
+            return  # do nothing if the browser already has the desired user type
         self.get(f'{BASE_URL}/user_switcher/options')
-        self.click_element_by_xpath(f'//a[div[h4[contains(text(), "{user_type.value}")]]]')
+        try:
+            self.click_element_by_xpath(f'//a[div[h4[contains(text(), "{user_type.value}")]]]')
+        except NoSuchElementError:
+            raise InvalidUserTypeError("User does not have a linked account of the given type")
         self.update_constants()
 
     @property

@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
-from autohandshake.src.exceptions import InvalidURLError, WrongPageForMethodError
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
+from autohandshake.src.exceptions import InvalidURLError, WrongPageForMethodError, \
+    InvalidUserTypeError
+from typing import Callable
 
 
 class Page(ABC):
@@ -53,6 +55,31 @@ class Page(ABC):
         :type url: str
         """
         raise NotImplementedError
+
+    @classmethod
+    def require_user_type(cls, user_type: UserType):
+        """
+        Throw an error if the browser is not currently logged in as the required user type.
+
+        To be used as a decorator for Page subclass methods that require the
+        browser to be logged in as a specific user type.
+
+        :param func: a page method
+        :type func: function
+        :param user_type: the user type to require
+        :type user_type: UserType
+        """
+
+        def require_user_type_decorator(func: Callable):
+            def inner_func(self, *args, **kwargs):
+                if not self._browser.user_type == user_type:
+                    raise InvalidUserTypeError("Invalid user type for method")
+                return func(self, *args, **kwargs)
+
+            return inner_func
+
+        return require_user_type_decorator
+
 
     @property
     def url(self):

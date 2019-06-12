@@ -1,6 +1,6 @@
 from autohandshake.src.Pages import Page
 from autohandshake.src.constants import BASE_URL
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
 from autohandshake.src.Pages.SchoolSettings.AppointmentTypePage import AppointmentTypePage
 import re
 
@@ -16,12 +16,14 @@ class AppointmentTypesListPage(Page):
         super().__init__(f'{BASE_URL}/schools/{browser.school_id}/appointment_types',
                          browser)
 
+    @Page.require_user_type(UserType.STAFF)
     def get_type_ids(self) -> list:
         """Get a list of appointment type IDs for your school"""
         type_links = self._browser.get_elements_attribute_by_xpath(
             "//div[@class='top-right-btn']/a[@class='btn btn-default']", "href")
         return [self._extract_type_id_from_url(link) for link in type_links]
 
+    @Page.require_user_type(UserType.STAFF)
     def get_type_settings(self, how_many: int = None) -> list:
         """
         Get a list of settings objects for all appointment type settings.

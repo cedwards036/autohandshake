@@ -1,5 +1,5 @@
 from autohandshake.src.Pages import Page
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
 from autohandshake.src.constants import BASE_URL
 from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError, \
     InsufficientPermissionsError
@@ -48,6 +48,7 @@ class _DownloadModal:
         self._browser = browser
         self.is_open = False
 
+    @Page.require_user_type(UserType.STAFF)
     def open(self):
         """Open the insights report download modal box."""
         if not self.is_open:
@@ -59,11 +60,13 @@ class _DownloadModal:
             self._browser.click_element_by_xpath("//div[@class='modal-body']")
             self.is_open = True
 
+    @Page.require_user_type(UserType.STAFF)
     def validate_download_modal_is_open(self):
         """Throw an error if the download modal is not open."""
         if not self.is_open:
             raise NoSuchElementError('Insights Download modal box must be open')
 
+    @Page.require_user_type(UserType.STAFF)
     def get_download_file_type(self) -> FileType:
         """
         Get the name of the file type currently selected.
@@ -77,6 +80,7 @@ class _DownloadModal:
         # values are formatted "string:[value name]." we must remove the first 7 chars
         return FileType(value[7:])
 
+    @Page.require_user_type(UserType.STAFF)
     def set_download_file_type(self, file_type: FileType):
         """
         If the download modal is open, select the file type to download.
@@ -100,6 +104,7 @@ class _DownloadModal:
         except KeyError:
             raise ValueError(f'Invalid file type: "{file_type}"')
 
+    @Page.require_user_type(UserType.STAFF)
     def set_limit_to_all_results(self, remove_sorts: bool = False):
         """
         If the download modal is open, set the download limit to "all results,"
@@ -122,6 +127,7 @@ class _DownloadModal:
             raise InsufficientPermissionsError('You do not have permission '
                                                'to download all results')
 
+    @Page.require_user_type(UserType.STAFF)
     def set_custom_limit(self, limit: int):
         """
         If the download modal is open, set the download limit to a custom number
@@ -139,6 +145,7 @@ class _DownloadModal:
         self._browser.wait_until_element_is_clickable_by_xpath(custom_limit_value_xpath)
         self._browser.send_text_to_element_by_xpath(custom_limit_value_xpath, str(limit))
 
+    @Page.require_user_type(UserType.STAFF)
     def get_file_name(self) -> str:
         """
         If the download modal is open, get the file name of the file to be
@@ -152,6 +159,7 @@ class _DownloadModal:
         self._browser.wait_until_element_exists_by_xpath(file_name_xpath)
         return self._browser.get_element_attribute_by_xpath(file_name_xpath, 'value')
 
+    @Page.require_user_type(UserType.STAFF)
     def set_file_name(self, file_name: str):
         """
         If the download modal is open, set the file name of the file to be
@@ -168,6 +176,7 @@ class _DownloadModal:
         file_name = self.ensure_file_name_has_correct_extension(file_name)
         self._browser.send_text_to_element_by_xpath(file_name_xpath, file_name)
 
+    @Page.require_user_type(UserType.STAFF)
     def click_download_button(self, download_dir: str, max_wait_time: int = DEFAULT_WAIT_TIME) -> str:
         """
         If the download modal is open, download the Insights report
@@ -192,6 +201,7 @@ class _DownloadModal:
         self.is_open = False
         return file_path
 
+    @Page.require_user_type(UserType.STAFF)
     def click_open_in_browser(self) -> List[dict]:
         """
         If the download modal is open, open the data report in the browser in a
@@ -259,6 +269,7 @@ class InsightsPage(Page):
             raise InvalidURLError('Insights URL has no dimensions or measures selected')
         self.modal = _DownloadModal(self._browser)
 
+    @Page.require_user_type(UserType.STAFF)
     def get_data(self) -> List[dict]:
         """Get a JSON-like list of dict representation of the Insights report's data
 
@@ -274,6 +285,7 @@ class InsightsPage(Page):
             # keep limit at "Results in Table" if "All Results" is not available
         return self.modal.click_open_in_browser()
 
+    @Page.require_user_type(UserType.STAFF)
     def download_file(self, download_dir: str, file_name: str = None, file_type: FileType = FileType.CSV,
                       max_wait_time: int = DEFAULT_WAIT_TIME) -> str:
         """Download the Insights report's data in a file of the specified type
@@ -306,6 +318,7 @@ class InsightsPage(Page):
             # keep limit at "Results in Table" if "All Results" is not available
         return self.modal.click_download_button(download_dir, max_wait_time)
 
+    @Page.require_user_type(UserType.STAFF)
     def set_date_range_filter(self, field_category: str, field_title: str,
                               start_date: date, end_date: date):
         """

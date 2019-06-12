@@ -1,6 +1,6 @@
 from autohandshake.src.Pages import Page
 from autohandshake.src.exceptions import NoSuchElementError
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
 from autohandshake.src.constants import BASE_URL
 from dateutil.parser import parse
 from bs4 import BeautifulSoup
@@ -10,6 +10,11 @@ import re
 
 
 class AppointmentCalendarPage(Page):
+    """
+    The calendar view of staff appointments.
+
+    Can only be accessed with a career services/admin-type account.
+    """
 
     def __init__(self, browser: HandshakeBrowser):
         """
@@ -18,6 +23,7 @@ class AppointmentCalendarPage(Page):
         """
         super().__init__(f'{BASE_URL}/appointments/calendar', browser)
 
+    @Page.require_user_type(UserType.STAFF)
     def go_to_date(self, date: datetime.date):
         """Using the calendar's datepicker, navigate to the specified date
 
@@ -47,6 +53,7 @@ class AppointmentCalendarPage(Page):
         # wait for new calendar date to finish loading
         self._browser.wait_until_element_does_not_exist_by_xpath(LOADING_SPINNER_XPATH)
 
+    @Page.require_user_type(UserType.STAFF)
     def get_unfilled_blocks(self, start_date: datetime.date, end_date: datetime.date = None,
                             include_mediums: bool = False) -> List[dict]:
         """

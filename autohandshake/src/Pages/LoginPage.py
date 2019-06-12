@@ -47,6 +47,7 @@ class LoginPage(Page):
                                                  'sign in.\']'):
             raise InvalidURLError("The school specified in the URL is not valid")
 
+    @Page.require_user_type(None)  # requires the user to be logged out, i.e. no user type
     def login(self, email, password):
         """
         Log into Handshake using the given credentials

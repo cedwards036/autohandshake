@@ -1,6 +1,6 @@
 from typing import Optional
 
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
 from autohandshake.src.Pages import Page
 from autohandshake.src.constants import BASE_URL
 
@@ -18,6 +18,7 @@ class AppointmentTypePage(Page):
         self._id = type_id
         super().__init__(f'{BASE_URL}/appointment_types/{type_id}/edit', browser)
 
+    @Page.require_user_type(UserType.STAFF)
     def get_settings(self) -> dict:
         """
         Get the settings for this page's appointment type.

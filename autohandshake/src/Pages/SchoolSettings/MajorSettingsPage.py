@@ -1,5 +1,5 @@
 from autohandshake.src.Pages import Page
-from autohandshake.src.HandshakeBrowser import HandshakeBrowser
+from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
 from autohandshake.src.constants import BASE_URL
 from typing import List
 
@@ -16,6 +16,7 @@ class MajorSettingsPage(Page):
         super().__init__(majors_base_url + url_query,
                          browser)
 
+    @Page.require_user_type(UserType.STAFF)
     def get_major_mapping(self) -> List[dict]:
         """
         Get a list of all the school's majors and their associated major groups.
