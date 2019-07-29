@@ -1,5 +1,5 @@
 HandshakeBrowser
 ================
-.. module :: autohandshake
+.. module:: autohandshake
 .. autoclass:: HandshakeBrowser
     :members:

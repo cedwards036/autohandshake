@@ -12,6 +12,7 @@ from autohandshake.src import (
     AppointmentTypePage,
     MajorSettingsPage,
     FileType,
+    InterviewSchedulePage,
     RequestStatus
 )
 

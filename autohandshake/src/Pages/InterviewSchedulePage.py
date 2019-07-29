@@ -25,11 +25,12 @@ class InterviewSchedulePage(Page):
         Retrieve the name and email of each person listed under "Contacts" on the interview schedule page.
 
         Method returns a list of dicts of the form:
+        ::
 
-        [
-            {'name': 'Jane Recruiter', 'email': 'jrec@company.com'},
-            {'name': 'John Employer', 'email': 'jemp@company.com'}
-        ]
+            [
+                {'name': 'Jane Recruiter', 'email': 'jrec@company.com'},
+                {'name': 'John Employer', 'email': 'jemp@company.com'}
+            ]
 
         :return: a list of dicts containing contact info
         """

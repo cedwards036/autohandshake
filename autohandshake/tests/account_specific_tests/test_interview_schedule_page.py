@@ -1,5 +1,5 @@
 import unittest
-from autohandshake.src.Pages import InterviewSchedulePage
+from autohandshake import InterviewSchedulePage
 from autohandshake.tests import TestSession
 
 

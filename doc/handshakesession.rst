@@ -1,5 +1,5 @@
 HandshakeSession
 ================
-.. module :: autohandshake
+.. module:: autohandshake
 .. autoclass:: HandshakeSession
     :members:

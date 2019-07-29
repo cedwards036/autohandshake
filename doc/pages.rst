@@ -2,12 +2,14 @@
 Pages
 =====
 
+.. automodule:: autohandshake
+
 AccessRequestPage
 =================
-.. autoclass:: autohandshake.AccessRequestPage
+.. autoclass:: AccessRequestPage
     :members:
 
-.. autoclass:: autohandshake.RequestStatus
+.. autoclass:: RequestStatus
     :members:
 
 Example
@@ -25,7 +27,7 @@ Example
 AppointmentCalendarPage
 =======================
 
-.. autoclass:: autohandshake.AppointmentCalendarPage
+.. autoclass:: AppointmentCalendarPage
     :members:
 
 Example
@@ -44,7 +46,7 @@ Example
 AppointmentTypePage
 ===================
 
-.. autoclass:: autohandshake.AppointmentTypePage
+.. autoclass:: AppointmentTypePage
     :members:
 
 Example
@@ -62,7 +64,7 @@ Example
 AppointmentTypesListPage
 ========================
 
-.. autoclass:: autohandshake.AppointmentTypesListPage
+.. autoclass:: AppointmentTypesListPage
     :members:
 
 Example
@@ -78,10 +80,10 @@ Example
 InsightsPage
 ============
 
-.. autoclass:: autohandshake.InsightsPage
+.. autoclass:: InsightsPage
     :members:
 
-.. autoclass:: autohandshake.FileType
+.. autoclass:: FileType
     :members:
 
 Example
@@ -114,7 +116,7 @@ Example
 MajorSettingsPage
 =================
 
-.. autoclass:: autohandshake.MajorSettingsPage
+.. autoclass:: MajorSettingsPage
     :members:
 
 Example
@@ -131,7 +133,7 @@ Example
 InterviewSchedulePage
 =====================
 
-.. autoclass:: autohandshake.InterviewSchedulePage
+.. autoclass:: InterviewSchedulePage
     :members:
 
 Example
@@ -146,3 +148,4 @@ Example
         interview_page = InterviewSchedulePage(schedule_id, browser)
         contacts = interview_page.get_contacts()
         reserved_rooms = interview_page.get_reserved_rooms()
+

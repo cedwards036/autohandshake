@@ -19,6 +19,7 @@ autohandshake/src/exceptions.py
 autohandshake/src/Pages/AccessRequestPage.py
 autohandshake/src/Pages/AppointmentCalendarPage.py
 autohandshake/src/Pages/InsightsPage.py
+autohandshake/src/Pages/InterviewSchedulePage.py
 autohandshake/src/Pages/LoginPage.py
 autohandshake/src/Pages/Page.py
 autohandshake/src/Pages/__init__.py
@@ -33,6 +34,7 @@ autohandshake/tests/account_specific_tests/test_appointment_calendar_page.py
 autohandshake/tests/account_specific_tests/test_appointment_type_page.py
 autohandshake/tests/account_specific_tests/test_appointment_types_list_page.py
 autohandshake/tests/account_specific_tests/test_insights_page.py
+autohandshake/tests/account_specific_tests/test_interview_schedule_page.py
 autohandshake/tests/account_specific_tests/test_major_groups_page.py
 autohandshake/tests/universal_tests/__init__.py
 autohandshake/tests/universal_tests/test_handshake_browser.py

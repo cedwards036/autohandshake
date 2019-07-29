@@ -76,6 +76,7 @@ class Page(ABC):
                     raise InvalidUserTypeError("Invalid user type for method")
                 return func(self, *args, **kwargs)
 
+            inner_func.__doc__ = func.__doc__
             return inner_func
 
         return require_user_type_decorator
