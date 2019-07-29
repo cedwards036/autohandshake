@@ -74,9 +74,7 @@ class HandshakeBrowser:
         dirname = os.path.dirname(__file__)
         if not chromedriver_path:
             chromedriver_path = os.path.join(dirname, '../chromedriver.exe')
-        driver_path = os.path.join(chromedriver_path)
-
-        self._browser = webdriver.Chrome(executable_path=driver_path,
+        self._browser = webdriver.Chrome(executable_path=chromedriver_path,
                                          options=options)
         self.max_wait_time = max_wait_time
         self._user_type = None

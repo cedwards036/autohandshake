@@ -47,7 +47,7 @@ class HandshakeSession:
             if not self._password:
                 raise InvalidPasswordError("Keyring unable to find password for "
                                            f"service {login_url} and user {email}")
-        self._browser = HandshakeBrowser(max_wait_time=max_wait_time)
+        self._browser = HandshakeBrowser(max_wait_time=max_wait_time, chromedriver_path=chromedriver_path)
 
     def __enter__(self) -> HandshakeBrowser:
         """
