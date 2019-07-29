@@ -17,7 +17,8 @@ class HandshakeSession:
 
     """
 
-    def __init__(self, login_url: str, email: str, password: str = None, max_wait_time: int = MAX_WAIT_TIME):
+    def __init__(self, login_url: str, email: str, password: str = None, max_wait_time: int = MAX_WAIT_TIME,
+                 chromedriver_path=None):
         """
         :param login_url: a valid Handshake homepage url of the form
                           "https://[school].joinhandshake.com"
@@ -34,6 +35,8 @@ class HandshakeSession:
         :param max_wait_time: the maximum time to wait for something to load
                               before throwing a timeout error
         :type max_wait_time: int
+        :param chromedriver_path: the filepath to chromedriver.exe. If not specified, the package's own driver will be used
+        :type chromedriver_path: str
         """
         self._login_url = login_url
         self._email = email
