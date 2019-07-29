@@ -60,6 +60,7 @@ class InterviewSchedulePage(Page):
                 there_are_unprocessed_contacts = False
         return contacts
 
+    @Page.require_user_type(UserType.STAFF)
     def get_reserved_rooms(self):
         """
         Get the number of rooms reserved for the interview schedule.

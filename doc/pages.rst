@@ -126,3 +126,23 @@ Example
     with HandshakeBrowser(school_url, email) as browser:
         major_settings_page = MajorSettingsPage(browser)
         mapping = major_settings_page.get_major_mapping()
+
+
+InterviewSchedulePage
+=====================
+
+.. autoclass:: autohandshake.InterviewSchedulePage
+    :members:
+
+Example
+-------
+::
+
+    from autohandshake import HandshakeBrowser, InterviewSchedulePage
+
+    schedule_id = 452361
+
+    with HandshakeBrowser(school_url, email) as browser:
+        interview_page = InterviewSchedulePage(schedule_id, browser)
+        contacts = interview_page.get_contacts()
+        reserved_rooms = interview_page.get_reserved_rooms()
