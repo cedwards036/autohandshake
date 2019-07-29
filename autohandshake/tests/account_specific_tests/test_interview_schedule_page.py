@@ -24,3 +24,12 @@ class TestAppointmentTypePage(unittest.TestCase):
         with TestSession() as browser:
             schedule_page = InterviewSchedulePage(TEST_SCHEDULE_ID, browser)
             self.assertEqual(expected, schedule_page.get_contact_info())
+
+    def test_get_reserved_rooms(self):
+        TEST_SCHEDULE_ID = 61382  # Bloomberg SWE Interviews, Fall 2018
+
+        expected = 7
+
+        with TestSession() as browser:
+            schedule_page = InterviewSchedulePage(TEST_SCHEDULE_ID, browser)
+            self.assertEqual(expected, schedule_page.get_reserved_rooms())

@@ -60,6 +60,16 @@ class InterviewSchedulePage(Page):
                 there_are_unprocessed_contacts = False
         return contacts
 
+    def get_reserved_rooms(self):
+        """
+        Get the number of rooms reserved for the interview schedule.
+
+        :return: the number of rooms reserved for the schedule
+        """
+        reserved_text = self._browser.get_element_attribute_by_xpath('//span[contains(text(), " reserved")]', 'text')
+        return int(reserved_text.split()[0])
+
+
     def _validate_url(self, url):
         """
         Ensure that the given URL is a valid URL.
