@@ -6,14 +6,14 @@ from autohandshake.src.exceptions import NoSuchElementError, InsufficientPermiss
 
 class StudentProfilePage(Page):
     """
-    The old Handshake login page
+    A student profile page in Handshake.
     """
 
     def __init__(self, student_id: int, browser: HandshakeBrowser):
         """
         :param student_id: the id of the student whose page to load
         :type student_id: int
-        :param browser: a HandshakeBrowser that has not logged in yet
+        :param browser: a logged-in HandshakeBrowser
         :type browser: HandshakeBrowser
         """
         self._id = student_id
