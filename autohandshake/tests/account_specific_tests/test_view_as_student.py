@@ -4,7 +4,7 @@ from autohandshake import UserType, ViewAsStudent
 from autohandshake.tests import TestSession
 from autohandshake.src.constants import BASE_URL
 
-TEST_USER_ID = 8534543  # my old fake student account
+TEST_USER_ID = 20474668  # my old fake student account
 
 
 class TestViewAsStudent(unittest.TestCase):
