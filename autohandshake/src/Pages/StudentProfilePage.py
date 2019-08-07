@@ -21,7 +21,7 @@ class StudentProfilePage(Page):
 
     @Page.require_user_type(UserType.STAFF)
     def view_as_student(self):
-        view_as_btn_xpath = '//a[@href="/users/8534543/view_as"]'
+        view_as_btn_xpath = f'//a[@href="/users/{self._id}/view_as"]'
         try:
             self._browser.click_element_by_xpath(view_as_btn_xpath)
         except NoSuchElementError:
