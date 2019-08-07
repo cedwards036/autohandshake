@@ -3,6 +3,7 @@ from autohandshake.src import (
     HandshakeSession,
     HandshakeBrowser,
     UserType,
+    ViewAsStudent,
 
     # pages
     AccessRequestPage,
@@ -13,6 +14,7 @@ from autohandshake.src import (
     MajorSettingsPage,
     FileType,
     InterviewSchedulePage,
+    CareerInterestsPage,
     RequestStatus
 )
 
