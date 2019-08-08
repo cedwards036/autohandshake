@@ -15,6 +15,7 @@ from autohandshake.src import (
     FileType,
     InterviewSchedulePage,
     CareerInterestsPage,
+    SurveyPage,
     RequestStatus
 )
 

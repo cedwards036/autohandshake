@@ -5,5 +5,6 @@ from autohandshake.src.Pages.AccessRequestPage import AccessRequestPage, Request
 from autohandshake.src.Pages.AppointmentCalendarPage import AppointmentCalendarPage
 from autohandshake.src.Pages.InterviewSchedulePage import InterviewSchedulePage
 from autohandshake.src.Pages.CareerInterestsPage import CareerInterestsPage
+from autohandshake.src.Pages.SurveyPage import SurveyPage
 
 from autohandshake.src.Pages.SchoolSettings import *

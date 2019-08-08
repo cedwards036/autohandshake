@@ -18,5 +18,7 @@ download_dir = config['CONSTANTS']['DOWNLOAD_DIR']
 class TestSession(HandshakeSession):
     """A testing instance of HandshakeSession that always logs in with config-based credentials"""
 
+    download_dir = download_dir
+
     def __init__(self, max_wait_time=MAX_WAIT_TIME):
         super().__init__(homepage, email, password, max_wait_time)
