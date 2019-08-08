@@ -21,7 +21,7 @@ class TestAppointmentTypesListPage(unittest.TestCase):
                 'description': 'Strategize your approach to building your professional network and polish your networking skills.',
                 'length': 30,
                 'categories': ['Find Jobs/Internships/Opportunities'],
-                'drop_in_enabled': True,
+                'drop_in_enabled': False,
                 'pre_message': 'Due to our staff size, we have a strict no-show policy for both in-person and virtual appointments. Please plan to arrive five minutes prior to your scheduled appointment.  If you cannot make your appointment, please cancel as soon as possible. You may cancel your appointment in Handshake up to 12 hours before your appointment date.  After 12 hours, you must contact our office at carey.careerdevelopment@jhu.edu or 410-234-9270 to cancel. For appointments at the Harbor East location, enter through the Carey Business School doors and go to the front desk. Explain that you have a coaching appointment and give the attendant the name of your Career Coach.  For appointments at the DC location, go to the Bernstein Offit Building (BOB) 1717 Massachusetts Ave, 8th floor.  We do not validate parking at the DC or Harbor East locations. In addition to the school\'s garage parking, local garages and street parking are available.',
                 'pre_survey': 'Carey: Pre Appointment Survey',
                 'post_message': 'To help us better assist you in the future, please take a moment to complete the attached brief survey.  We also want to celebrate your success and tailor career search strategies unique to your experience and needs. Please be sure to update us on your job interviews or offers by sending an email to carey.careerdevelopment@jhu.edu.',
@@ -32,7 +32,7 @@ class TestAppointmentTypesListPage(unittest.TestCase):
                 'cum_gpa': None,
                 'major_groups': None,
                 'colleges': None,
-                'labels': ['system gen: cbs', 'system gen: dual degree cbs', 'temp label: dual degree cbs'],
+                'labels': ['system gen: dual degree cbs', 'temp label: dual degree cbs', 'system gen: cbs'],
                 'career_clusters': None
             },
             {
