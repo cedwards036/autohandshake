@@ -15,6 +15,6 @@ class TestMajorSettingsPage(unittest.TestCase):
             self.assertEqual('Applied Physics', mapping[13]['major'])
             self.assertEqual(['Aerospace Engineering', 'General Engineering', 'Physics'], sorted(mapping[13]['groups']))
 
-            self.assertEqual('Bachelors: Film & Media Studies', mapping[33]['major'])
+            self.assertEqual('Bachelors: Film & Media Studies', mapping[34]['major'])
             self.assertEqual(['Documentary/Film', 'Public Relations', 'Radio, Television, Media'],
-                             sorted(mapping[33]['groups']))
+                             sorted(mapping[34]['groups']))
