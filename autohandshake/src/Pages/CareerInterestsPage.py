@@ -6,7 +6,9 @@ from autohandshake.src.constants import BASE_URL
 class CareerInterestsPage(Page):
     """A settings page for a single student's career interests.
 
-    Only accessible while logged in as a student.
+    Only accessible while logged in as a student. Currently, the main utility
+    of this class is allowing for the automated selection and deselection of
+    Career Clusters.
     """
 
     def __init__(self, student_id: int, browser: HandshakeBrowser):
@@ -20,6 +22,7 @@ class CareerInterestsPage(Page):
         super().__init__(f'{BASE_URL}/users/{student_id}/career_interests', browser)
         browser.execute_script_on_element_by_xpath('window.scroll(0, 1000)')
 
+    @Page.require_user_type(UserType.STUDENT)
     def cluster_is_selected_by_id(self, cluster_id: int) -> bool:
         """
         Check whether or not a specific cluster is selected, given the cluster ID.
@@ -31,6 +34,7 @@ class CareerInterestsPage(Page):
         cluster_xpath = f'//{self._get_cluster_xpath_by_id(cluster_id)}'
         return self._browser.element_is_selected_by_xpath(cluster_xpath)
 
+    @Page.require_user_type(UserType.STUDENT)
     def cluster_is_selected_by_name(self, cluster_name: str) -> bool:
         """
         Check whether or not a specific cluster is selected, given the cluster name.
@@ -42,6 +46,7 @@ class CareerInterestsPage(Page):
         cluster_xpath = f'//{self._get_cluster_xpath_by_name(cluster_name)}'
         return self._browser.element_is_selected_by_xpath(cluster_xpath)
 
+    @Page.require_user_type(UserType.STUDENT)
     def select_cluster_by_id(self, cluster_id: int):
         """
         Select a career cluster given its id.
@@ -53,6 +58,7 @@ class CareerInterestsPage(Page):
         if not self.cluster_is_selected_by_id(cluster_id):
             self._browser.click_element_by_xpath(cluster_xpath)
 
+    @Page.require_user_type(UserType.STUDENT)
     def select_cluster_by_name(self, cluster_name: str):
         """
         Select a career cluster given its name.
@@ -64,6 +70,7 @@ class CareerInterestsPage(Page):
         if not self.cluster_is_selected_by_name(cluster_name):
             self._browser.click_element_by_xpath(cluster_xpath)
 
+    @Page.require_user_type(UserType.STUDENT)
     def deselect_cluster_by_id(self, cluster_id: int):
         """
         Deselect a career cluster given its ID.
@@ -75,6 +82,7 @@ class CareerInterestsPage(Page):
         if self.cluster_is_selected_by_id(cluster_id):
             self._browser.click_element_by_xpath(cluster_xpath)
 
+    @Page.require_user_type(UserType.STUDENT)
     def deselect_cluster_by_name(self, cluster_name: str):
         """
         Deselect a career cluster given its name.
@@ -86,9 +94,13 @@ class CareerInterestsPage(Page):
         if self.cluster_is_selected_by_name(cluster_name):
             self._browser.click_element_by_xpath(cluster_xpath)
 
+    @Page.require_user_type(UserType.STUDENT)
     def save_interests(self):
         """
         Save any changes made to the student's career interests.
+
+        You *must* call this method after making any changes to a student's
+        career interests if you would like those changes to persist.
         """
         self._browser.click_element_by_xpath('//button[text()="Save My Career Interests"]')
         confirmation_msg_xpath = '//div[contains(text(), "Thanks for updating your Career Interests")]'

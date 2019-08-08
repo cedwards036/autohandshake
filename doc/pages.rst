@@ -149,3 +149,46 @@ Example
         contacts = interview_page.get_contacts()
         reserved_rooms = interview_page.get_reserved_rooms()
 
+
+SurveyPage
+==========
+
+.. autoclass:: SurveyPage
+    :members:
+
+Example
+-------
+::
+
+    from autohandshake import HandshakeBrowser, SurveyPage
+
+    survey_id = 8279252
+    download_dir = 'C:\\Users\\username\\Downloads\\'
+
+    with HandshakeBrowser(school_url, email) as browser:
+        survey = SurveyPage(survey_id)
+        filepath = page.download_responses(download_dir)
+        # do something with the downloaded file
+
+
+CareerInterestsPage
+===================
+
+.. autoclass:: CareerInterestsPage
+    :members:
+
+Example
+-------
+::
+
+    from autohandshake import HandshakeBrowser, ViewAsStudent, CareerInterestsPage
+
+    student_id = 198427
+    career_clusters = ['Finance Cluster', 'STEM Cluster']
+
+    with HandshakeBrowser(school_url, email) as browser:
+        with ViewAsStudent(student_id, browser):
+            interests_page = CareerInterestsPage(student_id, browser)
+            for cluster in career_clusters:
+                interests_page.select_cluster_by_name(cluster)
+            interests_page.save_interests()

@@ -40,7 +40,7 @@ class ViewAsStudent:
         profile_page.view_as_student()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Close the web browser"""
+        """Stop viewing as the student and return to the career services view."""
         self._browser.click_element_by_xpath('//a[@href="/users/stop_viewing_as"]')
         self._browser.update_constants()
         if not self._stay_on_page:

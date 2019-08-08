@@ -10,6 +10,7 @@ Welcome to autohandshake's documentation!
    gettingstarted.rst
    handshakesession.rst
    handshakebrowser.rst
+   viewasstudent.rst
    pages.rst
 
 
