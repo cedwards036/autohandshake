@@ -2,6 +2,7 @@ from autohandshake.src.Pages import Page
 from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
 from autohandshake.src.constants import BASE_URL
 from typing import List
+from bs4 import BeautifulSoup
 
 
 class MajorSettingsPage(Page):
@@ -26,15 +27,17 @@ class MajorSettingsPage(Page):
         :rtype: list
         """
         mappings = []
+        table_rows = BeautifulSoup(self._browser.get_element_attribute_by_xpath(
+            '//tbody', 'innerHTML'),
+            'html.parser').find_all('tr', recursive=False)
 
-        majors = self._browser.get_elements_attribute_by_xpath("//tbody/tr/td[1]/a", "text")
-        group_strings = self._browser.get_elements_attribute_by_xpath("//tbody/tr/td[2]/a", "text")
-
-        for i in range(len(majors)):
-            groups = self._parse_major_groups_string(group_strings[i])
+        for row in table_rows:
+            major_name = row.find('a', {'data-bind': 'text: major_name, click: $parent.setSelectedMajor'}).text
+            major_groups_str = row.find('a', {'data-bind': 'text: major_group_names().join(\', \')'}).text
+            major_groups = self._parse_major_groups_string(major_groups_str)
             mappings.append({
-                'major': majors[i],
-                'groups': groups
+                'major': major_name,
+                'groups': major_groups
             })
 
         return mappings
