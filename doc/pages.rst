@@ -192,3 +192,21 @@ Example
             for cluster in career_clusters:
                 interests_page.select_cluster_by_name(cluster)
             interests_page.save_interests()
+
+
+WaitingRoomPage
+===================
+
+.. autoclass:: WaitingRoomPage
+    :members:
+
+Example
+-------
+::
+
+    from autohandshake import HandshakeBrowser, ViewAsStudent, CareerInterestsPage
+
+    with HandshakeBrowser(school_url, email) as browser:
+        waiting_room = WaitingRoomPage(browser)
+        waiting_room_data = waiting_room.get_checkin_data()
+
