@@ -166,7 +166,7 @@ Example
     download_dir = 'C:\\Users\\username\\Downloads\\'
 
     with HandshakeBrowser(school_url, email) as browser:
-        survey = SurveyPage(survey_id)
+        survey = SurveyPage(survey_id, browser)
         filepath = page.download_responses(download_dir)
         # do something with the downloaded file
 
