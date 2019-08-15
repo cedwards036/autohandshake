@@ -93,25 +93,6 @@ class AppointmentCalendarPage(Page):
 
         return results
 
-    def _validate_url(self, url):
-        """
-        Ensure that the given URL is a valid URL.
-
-        Since the URL is not entered by the user, it is always valid.
-
-        :param url: the url to validate
-        :type url: str
-        """
-        return
-
-    def _wait_until_page_is_loaded(self):
-        """Wait until the page has finished loading."""
-
-        # altering the window size is necessary because the calendar's responsive
-        # design only triggers upon resizing, not on initial load
-        self._browser.maximize_window()
-        self._browser.wait_until_element_exists_by_xpath("//div[@class='appointment-calendar-staff-container']")
-
     def _get_unfilled_on_one_date(self, date: datetime.date, include_mediums: bool = False) -> List[dict]:
         """
         Get unfilled block data for a single date.
@@ -124,22 +105,20 @@ class AppointmentCalendarPage(Page):
         :rtype: list
         """
 
-        # the height of a calendar block increases by 3 pixels for each additional
-        # minute of length
-        PIXELS_PER_MINUTE = 3
-        DATE_STR = date.strftime("%m/%d/%y")
-
         self.go_to_date(date)
 
+        staff = self._initialize_staff_block_records()
+        staff = self._populate_staff_block_records(staff, date)
+        return self._get_unfilled_block_data_from(staff, include_mediums)
+
+    def _initialize_staff_block_records(self) -> List[dict]:
+        """
+        Create an empty data structure for storing staff block information,
+        based on the staff displayed in the appointment calendar.
+        """
         staff_header = BeautifulSoup(self._browser.get_element_attribute_by_xpath(
             "//div[@class='appointment-calendar-staff-container']", "innerHTML"),
             'html.parser')
-
-        appt_grid = BeautifulSoup(self._browser.get_element_attribute_by_xpath(
-            "//div[@class='appointment-calendar-grid-container']", "innerHTML"),
-            'html.parser')
-
-        # Populate ordered list with staff as they appear in the header
         staff = []
         for link in staff_header.findAll('a'):
             staff.append({
@@ -150,66 +129,99 @@ class AppointmentCalendarPage(Page):
                     'blocked': [],
                 }
             })
+        return staff
 
-        # for each staff column in the calendar...
+    def _populate_staff_block_records(self, staff: List[dict], date: datetime.date):
+        """
+        Populate the given list of staff block records with calendar block data
+        scraped from the appointment calendar page.
+
+        :param staff: an empty staff block data structure to be populated
+        :param date: the calendar's currently displayed date
+        """
+        appt_grid = BeautifulSoup(self._browser.get_element_attribute_by_xpath(
+            "//div[@class='appointment-calendar-grid-container']", "innerHTML"),
+            'html.parser')
+
         for column_index, column in enumerate(appt_grid.findAll(
                 'div', 'appointment-calendar-advisor-data')):
-
-            # capture all available, appointment, and unavailable blocks
-            available_blocks = column.findAll(lambda x:
-                                              x.name == 'div' and
-                                              'appointment-block' in x.get('class', []) and
-                                              not 'unavailable' in x['class'])
-
+            available_blocks = column.findAll(self._element_is_available_block)
             appointment_blocks = column.findAll('div', 'appointment')
             unavailable_blocks = column.findAll('div', 'unavailable')
 
-            # Capture "Available" blocks
-            for block_index, block in enumerate(available_blocks):
-                block_start_time = parse(block['data-time'][:-6])
-                block_height = int(re.search("height: (\d+)px", block['style']).group(1))
-                block_length = block_height / PIXELS_PER_MINUTE
-                block_end_time = block_start_time + datetime.timedelta(minutes=block_length)
-                staff[column_index]['blocks']['available'].append({
-                    'start_time': block_start_time,
-                    'end_time': block_end_time,
-                    'x_idx': column_index + 1,
-                    'y_idx': block_index + 1
-                })
+            staff[column_index]['blocks']['available'] = self._parse_available_blocks(available_blocks, column_index)
+            staff[column_index]['blocks']['appointments'] = self._parse_appointment_blocks(appointment_blocks, date)
+            staff[column_index]['blocks']['blocked'] = self._parse_unavailable_blocks(unavailable_blocks)
 
-            # Capture "Appointment" blocks
-            for appt_block in appointment_blocks:
-                appt_time_text = appt_block.find('div', 'timing-information').text
-                appt_start_time = parse(DATE_STR + ' ' + re.search('^(\d+:\d+ [a-z]+)', appt_time_text).group(1))
-                appt_end_time = parse(DATE_STR + ' ' + re.search('(\d+:\d+ [a-z]+)$', appt_time_text).group(1))
+        return staff
 
-                staff[column_index]['blocks']['appointments'].append({
-                    'start_time': appt_start_time,
-                    'end_time': appt_end_time,
-                })
+    @staticmethod
+    def _element_is_available_block(element: BeautifulSoup) -> bool:
+        return (
+                (element.name == 'div') and
+                ('appointment-block' in element.get('class', [])) and
+                (not 'unavailable' in element['class'])
+        )
 
-            # Capture "Unavailable" blocks
-            for unavail_block in unavailable_blocks:
-                block_start_time = parse(unavail_block['data-time'][:-6])
-                block_height = int(re.search("height: (\d+)px", unavail_block['style']).group(1))
-                block_length = block_height / PIXELS_PER_MINUTE
-                block_end_time = block_start_time + datetime.timedelta(minutes=block_length)
+    def _parse_available_blocks(self, available_blocks: BeautifulSoup, column_index: int) -> List[dict]:
+        result = []
+        for block_index, block in enumerate(available_blocks):
+            block_time_range = self._get_block_time_range(block)
+            result.append({
+                'start_time': block_time_range['start_time'],
+                'end_time': block_time_range['end_time'],
+                'x_idx': column_index + 1,
+                'y_idx': block_index + 1
+            })
+        return result
 
-                staff[column_index]['blocks']['blocked'].append({
-                    'start_time': block_start_time,
-                    'end_time': block_end_time
-                })
+    @staticmethod
+    def _parse_appointment_blocks(appointment_blocks: BeautifulSoup, date: datetime.date) -> List[dict]:
+        result = []
+        DATE_STR = date.strftime("%m/%d/%y")
+        for appt_block in appointment_blocks:
+            appt_time_text = appt_block.find('div', 'timing-information').text
+            appt_start_time = parse(DATE_STR + ' ' + re.search('^(\d+:\d+ [a-z]+)', appt_time_text).group(1))
+            appt_end_time = parse(DATE_STR + ' ' + re.search('(\d+:\d+ [a-z]+)$', appt_time_text).group(1))
+            result.append({
+                'start_time': appt_start_time,
+                'end_time': appt_end_time,
+            })
+        return result
 
-        # cross reference available, unavailable, and appointment blocks to
-        # determine unfilled time ranges
-        unfilled_appt_list = []
+    def _parse_unavailable_blocks(self, unavailable_blocks: BeautifulSoup) -> List[dict]:
+        result = []
+        for unavailable_block in unavailable_blocks:
+            result.append(self._get_block_time_range(unavailable_block))
+        return result
 
+    @staticmethod
+    def _get_block_time_range(block: BeautifulSoup):
+        # the height of a calendar block increases by 3 pixels for each additional
+        # minute of length
+        PIXELS_PER_MINUTE = 3
+
+        block_start_time = parse(block['data-time'][:-6])
+        block_height_in_pixels = int(re.search("height: (\d+)px", block['style']).group(1))
+        block_length = block_height_in_pixels / PIXELS_PER_MINUTE
+        block_end_time = block_start_time + datetime.timedelta(minutes=block_length)
+        return {
+            'start_time': block_start_time,
+            'end_time': block_end_time,
+        }
+
+    def _get_unfilled_block_data_from(self, staff: List[dict], include_mediums: bool) -> List[dict]:
+        """
+        Given a list of staff block data, generate a list of unfilled appointment block data.
+
+        :param staff: a list of staff block data
+        :param include_mediums: whether or not to include mediums when creating unfilled block data
+        """
+        result = []
         for staff_member in staff:
             all_conflicts = staff_member['blocks']['appointments'] + staff_member['blocks']['blocked']
             all_open = staff_member['blocks']['available'][:]
             for open_block in all_open:
-
-                # break each open block up into its constituent open segments that are not covered by unavailable or appt blocks
                 open_segments = self._get_open_block_segments(open_block, all_conflicts)
                 for open_segment in open_segments:
                     unfilled_block = {
@@ -222,9 +234,8 @@ class AppointmentCalendarPage(Page):
                     if include_mediums:
                         unfilled_block['mediums'] = self._get_appt_mediums(open_block['x_idx'],
                                                                            open_block['y_idx'])
-                    unfilled_appt_list.append(unfilled_block)
-
-        return unfilled_appt_list
+                    result.append(unfilled_block)
+        return result
 
     @staticmethod
     def _get_open_block_segments(open_block: dict, conflict_blocks: list) -> List[dict]:
@@ -246,7 +257,6 @@ class AppointmentCalendarPage(Page):
         open_segments = [open_block]
         for conflict in conflict_blocks:
             for segment in open_segments:
-                # case where availability block is completely consumed by conflict block
                 if conflict['start_time'] <= segment['start_time'] and \
                         conflict['end_time'] >= segment['end_time']:
                     open_segments.remove(segment)
@@ -288,7 +298,7 @@ class AppointmentCalendarPage(Page):
         :rtype: list
         """
         BLOCK_XPATH = f'//div[@class="appointment-calendar-advisor-data"]' \
-            f'[{col_num}]/div[@class="appointment-block clickable"][{block_num}]'
+                      f'[{col_num}]/div[@class="appointment-block clickable"][{block_num}]'
         EDIT_ICON_XPATH = f"{BLOCK_XPATH}//*[contains(@class,'edit-icon')]"
         MEDIUMS_XPATH = '//div[@id="s2id_appointment-medium"]/ul/li/div'
         MODAL_XPATH = "//div[contains(@class, 'edit-appointment-block-popover')]"
@@ -335,3 +345,22 @@ class AppointmentCalendarPage(Page):
         """
         for n in range(int(((end_date - start_date).days))):
             yield start_date + datetime.timedelta(n)
+
+    def _validate_url(self, url):
+        """
+        Ensure that the given URL is a valid URL.
+
+        Since the URL is not entered by the user, it is always valid.
+
+        :param url: the url to validate
+        :type url: str
+        """
+        return
+
+    def _wait_until_page_is_loaded(self):
+        """Wait until the page has finished loading."""
+
+        # altering the window size is necessary because the calendar's responsive
+        # design only triggers upon resizing, not on initial load
+        self._browser.maximize_window()
+        self._browser.wait_until_element_exists_by_xpath("//div[@class='appointment-calendar-staff-container']")
