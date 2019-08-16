@@ -47,7 +47,7 @@ class TestHandshakeSession(unittest.TestCase):
 
     def test_custom_chromedriver_path(self):
         try:
-            with HandshakeSession(homepage, email, chromedriver_path='./chromedriver.exe') as browser:
+            with HandshakeSession(homepage, email, chromedriver_path='chromedriver.exe') as browser:
                 pass
         except Exception as e:
             self.fail(e)
