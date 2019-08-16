@@ -270,24 +270,30 @@ class InsightsPage(Page):
         self.modal = _DownloadModal(self._browser)
 
     @Page.require_user_type(UserType.STAFF)
-    def get_data(self) -> List[dict]:
+    def get_data(self, limit: int = None) -> List[dict]:
         """Get a JSON-like list of dict representation of the Insights report's data
 
+        :param limit: The maximum number of rows to retrieve. By default, there
+                      is no limit.
+        :type limit: int
         :returns: the Insight report's data in list-of-dict/JSON-like format
         :rtype: list
         """
         self.modal.open()
         self.modal.set_download_file_type(FileType.JSON)
-        try:
-            self.modal.set_limit_to_all_results(remove_sorts=True)
-        except InsufficientPermissionsError:
-            pass
-            # keep limit at "Results in Table" if "All Results" is not available
+        if limit is None:
+            try:
+                self.modal.set_limit_to_all_results(remove_sorts=True)
+            except InsufficientPermissionsError:
+                pass
+                # keep limit at "Results in Table" if "All Results" is not available
+        else:
+            self.modal.set_custom_limit(limit)
         return self.modal.click_open_in_browser()
 
     @Page.require_user_type(UserType.STAFF)
     def download_file(self, download_dir: str, file_name: str = None, file_type: FileType = FileType.CSV,
-                      max_wait_time: int = DEFAULT_WAIT_TIME) -> str:
+                      max_wait_time: int = DEFAULT_WAIT_TIME, limit: int = None) -> str:
         """Download the Insights report's data in a file of the specified type
 
         :param file_type: the type of file to download
@@ -304,6 +310,9 @@ class InsightsPage(Page):
         :param max_wait_time: the maximum amount of time to wait for the file to
                               download without throwing an error
         :type max_wait_time: int
+        :param limit: The maximum number of rows to retrieve. By default, there
+                      is no limit.
+        :type limit: int
         :returns: the filepath of the newly-downloaded file
         :rtype: str
         """
@@ -311,11 +320,14 @@ class InsightsPage(Page):
         self.modal.set_download_file_type(file_type)
         if file_name:
             self.modal.set_file_name(file_name)
-        try:
-            self.modal.set_limit_to_all_results(remove_sorts=True)
-        except InsufficientPermissionsError:
-            pass
-            # keep limit at "Results in Table" if "All Results" is not available
+        if limit is None:
+            try:
+                self.modal.set_limit_to_all_results(remove_sorts=True)
+            except InsufficientPermissionsError:
+                pass
+                # keep limit at "Results in Table" if "All Results" is not available
+        else:
+            self.modal.set_custom_limit(limit)
         return self.modal.click_download_button(download_dir, max_wait_time)
 
     @Page.require_user_type(UserType.STAFF)

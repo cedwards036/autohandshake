@@ -3,6 +3,7 @@ from autohandshake.src.Pages import InsightsPage, FileType
 from autohandshake.tests import TestSession, download_dir
 from autohandshake.src.exceptions import InvalidURLError, NoSuchElementError
 import os
+import json
 from datetime import date, datetime
 
 
@@ -38,18 +39,33 @@ class TestInsightsPage(unittest.TestCase):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vY2FyZWVyX3NlcnZpY2Vfc3RhZmZzP3FpZD1oUGFSSldmQWpyQjFqcDYyd3FCaWh2JmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
         with TestSession() as browser:
             insights = InsightsPage(valid_query, browser)
-            expected = [{'career_service_staffs.first_name': 'Joy',
-                         'career_service_staffs.last_name': 'Saunders'},
+            expected = [{'career_service_staffs.first_name': 'David',
+                         'career_service_staffs.last_name': ' Le'},
                         {'career_service_staffs.first_name': 'Ella',
                          'career_service_staffs.last_name': 'Stern'},
-                        {'career_service_staffs.first_name': 'Troy',
-                         'career_service_staffs.last_name': 'Parker'},
-                        {'career_service_staffs.first_name': 'David',
-                         'career_service_staffs.last_name': ' Le'},
+                        {'career_service_staffs.first_name': 'Joy',
+                         'career_service_staffs.last_name': 'Saunders'},
                         {'career_service_staffs.first_name': 'Ted',
-                         'career_service_staffs.last_name': 'Shaprow'}]
-            self.assertEqual(expected.sort(key=lambda x: x['career_service_staffs.first_name']),
-                             insights.get_data().sort(key=lambda x: x['career_service_staffs.first_name']))
+                         'career_service_staffs.last_name': 'Shaprow'},
+                        {'career_service_staffs.first_name': 'Troy',
+                         'career_service_staffs.last_name': 'Parker: Technology & Innovation'}]
+            actual = insights.get_data()
+            actual.sort(key=lambda x: x['career_service_staffs.first_name'])
+            self.assertEqual(expected, actual)
+
+    def test_get_data_with_custom_limit(self):
+        query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vY2FyZWVyX3NlcnZpY2Vfc3RhZmZzP3FpZD1oUGFSSldmQWpyQjFqcDYyd3FCaWh2JmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
+        with TestSession() as browser:
+            insights = InsightsPage(query, browser)
+            expected = [{'career_service_staffs.first_name': 'David',
+                         'career_service_staffs.last_name': ' Le'},
+                        {'career_service_staffs.first_name': 'Ella',
+                         'career_service_staffs.last_name': 'Stern'},
+                        {'career_service_staffs.first_name': 'Joy',
+                         'career_service_staffs.last_name': 'Saunders'}]
+            actual = insights.get_data(limit=3)
+            actual.sort(key=lambda x: x['career_service_staffs.first_name'])
+            self.assertEqual(expected, actual)
 
     def test_download_file_works_with_valid_download_dir(self):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPWtmaHNhdzRvODh0QnFPY1FxQ1NCNzYmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
@@ -57,11 +73,30 @@ class TestInsightsPage(unittest.TestCase):
         expected_filepath = os.path.join(download_dir, file_name)
         with TestSession() as browser:
             insights = InsightsPage(valid_query, browser)
-            insights.modal.open()
             downloaded_filepath = insights.download_file(download_dir, file_name, FileType.EXCEL)
             self.assertEqual(expected_filepath, downloaded_filepath)
             self.assertTrue(os.path.exists(expected_filepath))
             os.remove(expected_filepath)
+
+    def test_download_file_with_custom_limit(self):
+        query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vY2FyZWVyX3NlcnZpY2Vfc3RhZmZzP3FpZD1oUGFSSldmQWpyQjFqcDYyd3FCaWh2JmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
+        file_name = 'test_file_2589230.json'
+        expected_filepath = os.path.join(download_dir, file_name)
+        with TestSession() as browser:
+            insights = InsightsPage(query, browser)
+            downloaded_filepath = insights.download_file(download_dir, file_name, FileType.JSON, limit=3)
+        expected = [{'career_service_staffs.first_name': 'David',
+                     'career_service_staffs.last_name': ' Le'},
+                    {'career_service_staffs.first_name': 'Ella',
+                     'career_service_staffs.last_name': 'Stern'},
+                    {'career_service_staffs.first_name': 'Joy',
+                     'career_service_staffs.last_name': 'Saunders'}]
+        self.assertTrue(os.path.exists(expected_filepath))
+        with open(downloaded_filepath) as file:
+            actual = json.load(file)
+            actual.sort(key=lambda x: x['career_service_staffs.first_name'])
+        self.assertEqual(expected, actual)
+        os.remove(downloaded_filepath)
 
     def test_set_date_range_filter(self):
         def test_date_field(insights: InsightsPage, field: dict, new_start: date, new_end: date):
