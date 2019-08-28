@@ -126,8 +126,10 @@ class TestInsightsPage(unittest.TestCase):
                   'old_start_date': '2019-04-02', 'old_end_date': '2019-04-16',
                   'start_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[1]/td[3]/lk-filter/table/tbody/tr/td[2]/span[2]/span[1]/input',
                   'end_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[1]/td[3]/lk-filter/table/tbody/tr/td[2]/span[3]/span/input'}
+
         with TestSession() as browser:
             insights = InsightsPage(jobs_insights, browser)
+            test_date_field(insights, field1, datetime(2007, 5, 9), datetime(2014, 5, 7))
             test_date_field(insights, field1, datetime.strptime('10/31/2017', '%m/%d/%Y').date(),
                             datetime.strptime('12/03/2017', '%m/%d/%Y').date())
             test_date_field(insights, field2, datetime.strptime('12/02/2008', '%m/%d/%Y').date(),

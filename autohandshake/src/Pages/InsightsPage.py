@@ -367,18 +367,14 @@ class InsightsPage(Page):
                          data from 1/30/19, for example.
         :type end_date: date
         """
-        ENTER_KEY = u'\ue007'
-        BACKSPACE_KEY = u'\u0008'
-        start_date_str = self._format_date(start_date)
-        end_date_str = self._format_date(end_date)
+        calendar_icon_xpath = '//tr[./td/div[./span[text()="{}"]][./strong[' \
+                              'text()="{}"]]]//td[@class="clause-filter"]/span' \
+                              '[{}]/span/a[contains(@class, "calendar-icon")]'
+        start_calendar_xpath = calendar_icon_xpath.format(field_category, field_title, 2)
+        end_calendar_xpath = calendar_icon_xpath.format(field_category, field_title, 3)
 
-        date_inputs_xpath = '//tr[@class="filter ng-scope"][.//span[@class="' \
-                            'ng-binding" and text()="{}"][../' \
-                            'strong/text()="{}"]]//span[{}]/span/input'
-        start_xpath = date_inputs_xpath.format(field_category, field_title, 2)
-        end_xpath = date_inputs_xpath.format(field_category, field_title, 3)
-        self._browser.send_text_to_element_by_xpath(start_xpath, (BACKSPACE_KEY * 10) + start_date_str + ENTER_KEY * 2)
-        self._browser.send_text_to_element_by_xpath(end_xpath, (BACKSPACE_KEY * 10) + end_date_str + ENTER_KEY * 2)
+        self._select_calendar_date(start_calendar_xpath, start_date)
+        self._select_calendar_date(end_calendar_xpath, end_date)
 
     def _validate_url(self, url):
         """
@@ -418,14 +414,23 @@ class InsightsPage(Page):
 
             self._browser.wait_until_element_exists_by_xpath(exists_once_iframe_in_focus)
 
-    @staticmethod
-    def _format_date(date: date) -> str:
-        """
-        Format the given date as a string of the form yyyy-mm-dd.
+    def _select_calendar_date(self, calendar_xpath: str, select_date: date):
+        """Select a date on an Insights page calendar widget."""
+        MODAL_XPATH = '//ul[@template-url="template/datepicker/popup.html"]'
+        HEADING_BTN_XPATH = f'{MODAL_XPATH}//button[@role="heading"]'
+        YEAR_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%Y")}"]]'
+        MONTH_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%B")}"]]'
+        DAY_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%d")}"]]'
 
-        :param date: the date to format
-        :type date: date
-        :return: a date string in the form yyyy-mm-dd
-        :rtype: str
-        """
-        return date.strftime('%Y-%m-%d')
+        # open modal
+        self._browser.click_element_by_xpath(calendar_xpath)
+        self._browser.wait_until_element_is_clickable_by_xpath(MODAL_XPATH)
+
+        # prepare to select date in the order of year-month-day
+        self._browser.click_element_by_xpath(HEADING_BTN_XPATH)
+        self._browser.click_element_by_xpath(HEADING_BTN_XPATH)
+
+        # select the date
+        self._browser.click_element_by_xpath(YEAR_BTN_XPATH)
+        self._browser.click_element_by_xpath(MONTH_BTN_XPATH)
+        self._browser.click_element_by_xpath(DAY_BTN_XPATH)
