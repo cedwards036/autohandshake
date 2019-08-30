@@ -167,7 +167,7 @@ Example
 
     with HandshakeBrowser(school_url, email) as browser:
         survey = SurveyPage(survey_id, browser)
-        filepath = page.download_responses(download_dir)
+        filepath = survey.download_responses(download_dir)
         # do something with the downloaded file
 
 
@@ -210,3 +210,24 @@ Example
         waiting_room = WaitingRoomPage(browser)
         waiting_room_data = waiting_room.get_checkin_data()
 
+
+EventsPage
+==========
+
+.. autoclass:: EventsPage
+    :members:
+
+Example
+-------
+::
+
+    from autohandshake import HandshakeBrowser, EventsPage
+
+    saved_search = 'This is a Case Sensitive Saved Search Name'
+    download_dir = 'C:\\Users\\username\\Downloads\\'
+
+    with HandshakeBrowser(school_url, email) as browser:
+        events_page = EventsPage(browser)
+        events_page.load_saved_search(saved_search)
+        filepath = events_page.download_event_data(download_dir, wait_time=500)
+        # do something with the downloaded file
