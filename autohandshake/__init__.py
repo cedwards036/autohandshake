@@ -17,7 +17,8 @@ from autohandshake.src import (
     CareerInterestsPage,
     SurveyPage,
     WaitingRoomPage,
-    RequestStatus
+    RequestStatus,
+    EventsPage
 )
 
 from autohandshake.__about__ import (

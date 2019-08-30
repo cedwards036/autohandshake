@@ -1,38 +1,51 @@
 from autohandshake.src.Pages.Page import Page
 from autohandshake.src.HandshakeBrowser import HandshakeBrowser, UserType
-from autohandshake.src.constants import BASE_URL
+from autohandshake.src.exceptions import NoSuchElementError
 from autohandshake.src.file_download_utils import confirm_file_downloaded
+from autohandshake.src.constants import BASE_URL
 from datetime import datetime
 
 
-class SurveyPage(Page):
+class EventsPage(Page):
     """
-    A survey page in Handshake.
+    The main Events page in Handshake.
     """
 
-    def __init__(self, survey_id: int, browser: HandshakeBrowser):
+    def __init__(self, browser: HandshakeBrowser):
         """
-        :param survey_id: the id of the survey to load
-        :type survey_id: int
         :param browser: a logged-in HandshakeBrowser
         :type browser: HandshakeBrowser
         """
-        self._id = survey_id
-        super().__init__(f'{BASE_URL}/surveys/{survey_id}', browser)
+        super().__init__(f'{BASE_URL}/events', browser)
 
     @Page.require_user_type(UserType.STAFF)
-    def download_responses(self, download_dir: str, wait_time=300) -> str:
+    def load_saved_search(self, saved_search_name: str):
         """
-        Download a CSV of the survey responses.
+        Given the case-sensitive name of a saved search, apply that search.
+        """
+        saved_search_btn_xpath = '//a[@id="open-saved-searches"]'
+        saved_search_xpath = f'//div[./h3/span[text()="{saved_search_name}"]]'
+        self._browser.click_element_by_xpath(saved_search_btn_xpath)
+        self._browser.wait_until_element_is_clickable_by_xpath('//ul[@id="saved-searches"]')
+        try:
+            self._browser.click_element_by_xpath(saved_search_xpath)
+        except NoSuchElementError:
+            raise ValueError(f'There is no saved search with the name "{saved_search_name}"')
+        self._wait_until_page_is_loaded()
 
-        :param download_dir: the directory into which the survey responses will download
+    @Page.require_user_type(UserType.STAFF)
+    def download_event_data(self, download_dir: str, wait_time=300) -> str:
+        """
+        Download a CSV of the event data matching the page's current filters.
+
+        :param download_dir: the directory into which the file will download
         :type download_dir: str
         :param wait_time: the maximum time to wait for the download to appear
         :type wait_time: int
         :return: the file path of the downloaded file
         :rtype: str
         """
-        download_btn_xpath = '//a[text()="Download Results (CSV)"]'
+        download_btn_xpath = '//a[contains(@class, "download-results")]'
         download_link_xpath = '//a[contains(text(), "Your download is ready")]'
         self._browser.wait_then_click_element_by_xpath(download_btn_xpath)
         self._browser.wait_then_click_element_by_xpath(download_link_xpath)
@@ -44,7 +57,7 @@ class SurveyPage(Page):
         """
         Get a regex string describing the form of the downloaded file.
         """
-        return f'survey_response_download{datetime.now().strftime("%Y%m%d")}*.csv'
+        return f'event_download{datetime.now().strftime("%Y%m%d")}*.csv'
 
     def _validate_url(self, url):
         """
@@ -59,4 +72,4 @@ class SurveyPage(Page):
 
     def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
-        self._browser.wait_until_element_exists_by_xpath('//div[@class="entity-sidebar tile white"]')
+        self._browser.wait_until_element_exists_by_xpath('//tbody[@data-bind="foreach: events"]')
