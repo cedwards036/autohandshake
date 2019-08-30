@@ -60,16 +60,21 @@ class HandshakeBrowser:
 
     """
 
-    def __init__(self, max_wait_time: int = MAX_WAIT_TIME, chromedriver_path=None):
+    def __init__(self, max_wait_time: int = MAX_WAIT_TIME, chromedriver_path: str = None, download_dir: str = None):
         """
         :param max_wait_time: the maximum time (in seconds) to wait for an element
                               to load before throwing a timeout error
         :type max_wait_time: int
         :param chromedriver_path: the filepath to chromedriver.exe. If not specified, the package's own driver will be used
         :type chromedriver_path: str
+        :param download_dir: the directory in which to download any files. If not
+                             specified, defaults to system's default download location.
+        :type download_dir: str
         """
         options = webdriver.ChromeOptions()
         options.add_argument('--window-size=1920,1080')
+        if download_dir:
+            options.add_experimental_option('prefs', {'download.default_directory': download_dir})
 
         dirname = os.path.dirname(__file__)
         if not chromedriver_path:

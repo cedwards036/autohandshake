@@ -1,6 +1,6 @@
 import unittest
 
-from autohandshake import HandshakeSession
+from autohandshake import HandshakeSession, EventsPage
 from autohandshake.tests import email, password, homepage, school_id
 from autohandshake.src.exceptions import InvalidPasswordError
 
@@ -51,3 +51,12 @@ class TestHandshakeSession(unittest.TestCase):
                 pass
         except Exception as e:
             self.fail(e)
+
+    def test_custom_download_dir(self):
+        custom_download_dir = 'C:\\Users\\cedwar42\\Documents'
+        with HandshakeSession(homepage, email, download_dir=custom_download_dir) as browser:
+            events_page = EventsPage(browser)
+            try:
+                events_page.download_event_data(custom_download_dir, wait_time=30)
+            except RuntimeError as e:
+                self.fail(e)

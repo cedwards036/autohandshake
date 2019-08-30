@@ -18,7 +18,7 @@ class HandshakeSession:
     """
 
     def __init__(self, login_url: str, email: str, password: str = None, max_wait_time: int = MAX_WAIT_TIME,
-                 chromedriver_path=None):
+                 chromedriver_path=None, download_dir: str = None):
         """
         :param login_url: a valid Handshake homepage url of the form
                           "https://[school].joinhandshake.com"
@@ -37,6 +37,9 @@ class HandshakeSession:
         :type max_wait_time: int
         :param chromedriver_path: the filepath to chromedriver.exe. If not specified, the package's own driver will be used
         :type chromedriver_path: str
+        :param download_dir: the directory in which to download any files. If not
+                             specified, defaults to system's default download location.
+        :type download_dir: str
         """
         self._login_url = login_url
         self._email = email
@@ -47,7 +50,9 @@ class HandshakeSession:
             if not self._password:
                 raise InvalidPasswordError("Keyring unable to find password for "
                                            f"service {login_url} and user {email}")
-        self._browser = HandshakeBrowser(max_wait_time=max_wait_time, chromedriver_path=chromedriver_path)
+        self._browser = HandshakeBrowser(max_wait_time=max_wait_time,
+                                         chromedriver_path=chromedriver_path,
+                                         download_dir=download_dir)
 
     def __enter__(self) -> HandshakeBrowser:
         """
