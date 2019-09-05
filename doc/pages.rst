@@ -231,3 +231,22 @@ Example
         events_page.load_saved_search(saved_search)
         filepath = events_page.download_event_data(download_dir, wait_time=500)
         # do something with the downloaded file
+
+
+LabelSettingsPage
+=================
+
+.. autoclass:: LabelSettingsPage
+    :members:
+
+Example
+-------
+::
+
+    from autohandshake import HandshakeBrowser, LabelSettingsPage
+
+    with HandshakeBrowser(school_url, email) as browser:
+        label_settings_page = LabelSettingsPage(browser)
+        events_page.load_saved_search(saved_search)
+        label_data = label_settings_page.get_label_data()
+        # do something with label data
