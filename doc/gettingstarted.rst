@@ -44,12 +44,12 @@ any other arguments required by the page's constructor. You are now free to use 
 Example:
 ::
 
-    from autohandshake import HandshakeBrowser, InsightsPage
+    from autohandshake import HandshakeSession, InsightsPage
     import datetime
 
     appts_by_status_report = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vYXBwb2ludG1lbnRzP3FpZD1pcDFLd0ZlSmh4VVdobXYxa212U2xuJmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
 
-    with HandshakeBrowser(school_url, email) as browser:
+    with HandshakeSession(school_url, email) as browser:
         insights_page = InsightsPage(appts_by_status_report, browser)
         insights_page.set_date_range_filter('Appointments', 'Start Date Date',
                                             start_date = datetime.datetime(2018, 1, 1),
@@ -60,9 +60,9 @@ IMPORTANT: only the most recently loaded page's methods are available for use at
 the following will throw an error, since the first page is no longer active in the browser when its method is called:
 ::
 
-    from autohandshake import HandshakeBrowser, MajorSettingsPage, AppointmentTypePage
+    from autohandshake import HandshakeSession, MajorSettingsPage, AppointmentTypePage
 
-    with HandshakeBrowser(school_url, email) as browser:
+    with HandshakeSession(school_url, email) as browser:
         # load a page
         major_settings_page = MajorSettingsPage(browser)
         # load a second page
