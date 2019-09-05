@@ -18,7 +18,8 @@ from autohandshake.src import (
     SurveyPage,
     WaitingRoomPage,
     RequestStatus,
-    EventsPage
+    EventsPage,
+    LabelSettingsPage
 )
 
 from autohandshake.__about__ import (

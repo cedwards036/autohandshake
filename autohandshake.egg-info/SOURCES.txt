@@ -17,9 +17,11 @@ autohandshake/src/ViewAsStudent.py
 autohandshake/src/__init__.py
 autohandshake/src/constants.py
 autohandshake/src/exceptions.py
+autohandshake/src/file_download_utils.py
 autohandshake/src/Pages/AccessRequestPage.py
 autohandshake/src/Pages/AppointmentCalendarPage.py
 autohandshake/src/Pages/CareerInterestsPage.py
+autohandshake/src/Pages/EventsPage.py
 autohandshake/src/Pages/InsightsPage.py
 autohandshake/src/Pages/InterviewSchedulePage.py
 autohandshake/src/Pages/LoginPage.py
@@ -39,6 +41,7 @@ autohandshake/tests/account_specific_tests/test_appointment_calendar_page.py
 autohandshake/tests/account_specific_tests/test_appointment_type_page.py
 autohandshake/tests/account_specific_tests/test_appointment_types_list_page.py
 autohandshake/tests/account_specific_tests/test_career_interests_page.py
+autohandshake/tests/account_specific_tests/test_events_page.py
 autohandshake/tests/account_specific_tests/test_insights_page.py
 autohandshake/tests/account_specific_tests/test_interview_schedule_page.py
 autohandshake/tests/account_specific_tests/test_major_groups_page.py

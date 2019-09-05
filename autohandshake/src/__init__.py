@@ -5,4 +5,4 @@ from autohandshake.src.ViewAsStudent import ViewAsStudent
 from autohandshake.src.Pages import AccessRequestPage, InsightsPage, \
     MajorSettingsPage, AppointmentCalendarPage, AppointmentTypePage, \
     AppointmentTypesListPage, InterviewSchedulePage, CareerInterestsPage, FileType, \
-    RequestStatus, SurveyPage, WaitingRoomPage, EventsPage
+    RequestStatus, SurveyPage, WaitingRoomPage, EventsPage, LabelSettingsPage
