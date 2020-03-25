@@ -80,7 +80,7 @@ class TestInsightsPage(unittest.TestCase):
 
     def test_download_file_with_custom_limit(self):
         query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vY2FyZWVyX3NlcnZpY2Vfc3RhZmZzP3FpZD1oUGFSSldmQWpyQjFqcDYyd3FCaWh2JmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
-        file_name = 'test_file_2589230.json'
+        file_name = 'test_file_2589230.json_label'
         expected_filepath = os.path.join(download_dir, file_name)
         with TestSession() as browser:
             insights = InsightsPage(query, browser)
@@ -157,7 +157,7 @@ class TestInsightsPageDownloadModal(unittest.TestCase):
             insights.modal.set_download_file_type(FileType.CSV)
             self.assertEqual(FileType.CSV, insights.modal.get_download_file_type())
             insights.modal.set_download_file_type(FileType.JSON)
-            self.assertEqual(FileType.JSON, insights.modal.get_download_file_type())
+            self.assertEqual(FileType.JSON_LABEL, insights.modal.get_download_file_type())
             insights.modal.set_download_file_type(FileType.HTML)
             self.assertEqual(FileType.HTML, insights.modal.get_download_file_type())
             insights.modal.set_download_file_type(FileType.MARKDOWN)

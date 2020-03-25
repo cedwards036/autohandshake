@@ -27,7 +27,7 @@ class TestSurveyPage(unittest.TestCase):
                 'How likely are you?': '3'
             },
             {
-                'Name': 'Becca Student',
+                'Name': 'Jasmine Miller',
                 'Date': '2019-08-07 17:59:25 UTC',
                 'Email Address': 'rshille1@jhu.edu',
                 'What is your name?': 'Becca',

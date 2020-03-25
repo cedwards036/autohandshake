@@ -36,5 +36,5 @@ class TestLabelSettingsPage(unittest.TestCase):
                 'created_by_last_name': None,
                 'label_type': 'system',
             }
-            self.assertEqual(amm_expected, labels[35])
-            self.assertEqual(ferpa_expected, labels[28])
+            self.assertEqual(amm_expected, labels[34])
+            self.assertEqual(ferpa_expected, labels[30])

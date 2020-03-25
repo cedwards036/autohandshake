@@ -12,9 +12,9 @@ class TestMajorSettingsPage(unittest.TestCase):
             self.assertEqual('AD: Piano', mapping[4]['major'])
             self.assertEqual(['Music & Music Education', 'Visual & Performing Arts'], sorted(mapping[4]['groups']))
 
-            self.assertEqual('Applied Physics', mapping[13]['major'])
-            self.assertEqual(['Aerospace Engineering', 'General Engineering', 'Physics'], sorted(mapping[13]['groups']))
+            self.assertEqual('Applied Physics', mapping[14]['major'])
+            self.assertEqual(['Aerospace Engineering', 'General Engineering', 'Physics'], sorted(mapping[14]['groups']))
 
-            self.assertEqual('Bachelors: Film & Media Studies', mapping[35]['major'])
+            self.assertEqual('Bachelors: Film & Media Studies', mapping[40]['major'])
             self.assertEqual(['Documentary/Film', 'Public Relations', 'Radio, Television, Media'],
-                             sorted(mapping[35]['groups']))
+                             sorted(mapping[40]['groups']))

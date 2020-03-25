@@ -26,9 +26,9 @@ class TestAccessRequestPage(unittest.TestCase):
                     'status': 'failed'
                 },
                 {
-                    'user': 'Kristina Grubb',
+                    'user': 'Krista Grubb',
                     'user_id': '369508',
-                    'email': 'kgrubb4@jhu.edu',
+                    'email': 'krista.grubb@jhu.edu',
                     'request_date': datetime.strptime('2018-08-15', '%Y-%m-%d').date(),
                     'request': 'Student Reactivation',
                     'status': 'failed'

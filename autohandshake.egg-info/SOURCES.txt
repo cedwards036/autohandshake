@@ -32,6 +32,7 @@ autohandshake/src/Pages/WaitingRoomPage.py
 autohandshake/src/Pages/__init__.py
 autohandshake/src/Pages/SchoolSettings/AppointmentTypePage.py
 autohandshake/src/Pages/SchoolSettings/AppointmentTypesListPage.py
+autohandshake/src/Pages/SchoolSettings/LabelSettingsPage.py
 autohandshake/src/Pages/SchoolSettings/MajorSettingsPage.py
 autohandshake/src/Pages/SchoolSettings/__init__.py
 autohandshake/tests/__init__.py
@@ -44,6 +45,7 @@ autohandshake/tests/account_specific_tests/test_career_interests_page.py
 autohandshake/tests/account_specific_tests/test_events_page.py
 autohandshake/tests/account_specific_tests/test_insights_page.py
 autohandshake/tests/account_specific_tests/test_interview_schedule_page.py
+autohandshake/tests/account_specific_tests/test_labels_page.py
 autohandshake/tests/account_specific_tests/test_major_groups_page.py
 autohandshake/tests/account_specific_tests/test_survey_page.py
 autohandshake/tests/account_specific_tests/test_view_as_student.py

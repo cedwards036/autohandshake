@@ -19,7 +19,8 @@ from autohandshake.src import (
     WaitingRoomPage,
     RequestStatus,
     EventsPage,
-    LabelSettingsPage
+    LabelSettingsPage,
+    StaffPage
 )
 
 from autohandshake.__about__ import (
