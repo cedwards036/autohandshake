@@ -133,7 +133,7 @@ class TestInsightsPage(unittest.TestCase):
             test_date_field(insights, field1, datetime.strptime('10/31/2017', '%m/%d/%Y').date(),
                             datetime.strptime('12/03/2017', '%m/%d/%Y').date())
             test_date_field(insights, field2, datetime.strptime('12/02/2008', '%m/%d/%Y').date(),
-                            datetime.strptime('05/04/2019', '%m/%d/%Y').date())
+                            datetime.strptime('05/29/2019', '%m/%d/%Y').date())
             test_date_field(insights, field3, datetime.strptime('01/02/2013', '%m/%d/%Y').date(),
                             datetime.strptime('02/03/2014', '%m/%d/%Y').date())
 

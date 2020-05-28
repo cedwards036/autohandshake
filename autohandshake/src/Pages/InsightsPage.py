@@ -421,7 +421,7 @@ class InsightsPage(Page):
         HEADING_BTN_XPATH = f'{MODAL_XPATH}//button[@role="heading"]'
         YEAR_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%Y")}"]]'
         MONTH_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%B")}"]]'
-        DAY_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%d")}"]]'
+        DAY_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%d")}" and not(contains(@class, "text-muted"))]]'
 
         # open modal
         self._browser.click_element_by_xpath(calendar_xpath)
