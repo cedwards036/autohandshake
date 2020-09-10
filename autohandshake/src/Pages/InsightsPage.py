@@ -368,6 +368,7 @@ class InsightsPage(Page):
                          data from 1/30/19, for example.
         :type end_date: date
         """
+        self._browser.click_element_by_xpath('//lk-expandable-pane[contains(@class,"filter-pane")]')
         calendar_icon_xpath = '//tr[./td/div[./span[text()="{}"]][./strong[' \
                               'text()="{}"]]]//td[@class="clause-filter"]/span' \
                               '[{}]/span/a[contains(@class, "calendar-icon")]'
@@ -397,6 +398,8 @@ class InsightsPage(Page):
 
     def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
+        if self._browser.element_exists_by_xpath('//div[text()="Invalid report link"]'):
+            raise InvalidURLError('Insights URL is invalid')
         self._switch_to_looker_iframe()
 
     def _switch_to_looker_iframe(self):
@@ -406,7 +409,7 @@ class InsightsPage(Page):
             if self._browser.element_exists_by_xpath("//div[@style='display: none']"):
                 raise InvalidURLError("Insights query string is malformed")
 
-            iframe_xpath = "//iframe[@id='insights-iframe']"
+            iframe_xpath = "//iframe[@id='explore-iframe']"
             self._browser.wait_until_element_exists_by_xpath(iframe_xpath)
             self._browser.switch_to_frame_by_xpath(iframe_xpath)
 
