@@ -6,4 +6,4 @@ from autohandshake.src.Pages import AccessRequestPage, InsightsPage, \
     MajorSettingsPage, AppointmentCalendarPage, AppointmentTypePage, \
     AppointmentTypesListPage, InterviewSchedulePage, CareerInterestsPage, FileType, \
     RequestStatus, SurveyPage, WaitingRoomPage, EventsPage, LabelSettingsPage, \
-    StaffPage
+    StaffPage, EventPage

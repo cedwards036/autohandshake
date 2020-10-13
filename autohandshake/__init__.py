@@ -20,7 +20,8 @@ from autohandshake.src import (
     RequestStatus,
     EventsPage,
     LabelSettingsPage,
-    StaffPage
+    StaffPage,
+    EventPage
 )
 
 from autohandshake.__about__ import (

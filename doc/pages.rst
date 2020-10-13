@@ -233,6 +233,26 @@ Example
         # do something with the downloaded file
 
 
+EventPage
+=================
+
+.. autoclass:: EventPage
+    :members:
+
+Example
+-------
+::
+
+    from autohandshake import HandshakeSession, EventPage
+
+    event_id = 128345
+
+    with HandshakeSession(school_url, email) as browser:
+        event_page = EventPage(event_id, browser)
+        invited_schools = event_page.get_invited_schools()
+        # do something with invited schools
+
+
 LabelSettingsPage
 =================
 
@@ -249,3 +269,5 @@ Example
         label_settings_page = LabelSettingsPage(browser)
         label_data = label_settings_page.get_label_data()
         # do something with label data
+
+
