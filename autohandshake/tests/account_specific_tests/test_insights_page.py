@@ -26,6 +26,11 @@ class TestInsightsPage(unittest.TestCase):
             with TestSession() as browser:
                 InsightsPage(invalid_query, browser)
 
+    def test_no_error_is_thrown_given_saved_report_link_format(self):
+        valid_query = 'https://app.joinhandshake.com/analytics/reports/3290'
+        with TestSession() as browser:
+            InsightsPage(valid_query, browser)
+
     def test_get_data(self):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vY2FyZWVyX3NlcnZpY2Vfc3RhZmZzP3FpZD1oUGFSSldmQWpyQjFqcDYyd3FCaWh2JmVtYmVkX2RvbWFpbj1odHRwczolMkYlMkZhcHAuam9pbmhhbmRzaGFrZS5jb20mdG9nZ2xlPWZpbA=='
         with TestSession() as browser:

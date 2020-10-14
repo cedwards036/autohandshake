@@ -390,11 +390,15 @@ class InsightsPage(Page):
             re.match(f'^{BASE_URL}' + r'/analytics/explore_embed\?insights_page=[a-zA-Z0-9_]+(=){0,2}$', url) \
                 .group(0)
         except AttributeError:
-            try:  # try query parameter match
-                re.match(r'^[a-zA-Z0-9_]+(=){0,2}$', url) \
+            try:  # try saved report URL match
+                re.match(f'^{BASE_URL}' + r'/analytics/reports/[0-9]+$', url) \
                     .group(0)
             except AttributeError:
-                raise InvalidURLError()
+                try:  # try query parameter match
+                    re.match(r'^[a-zA-Z0-9_]+(=){0,2}$', url) \
+                        .group(0)
+                except AttributeError:
+                    raise InvalidURLError()
 
     def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
