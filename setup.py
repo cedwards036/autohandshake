@@ -26,5 +26,5 @@ setup(
     ],
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['selenium', 'bs4']
+    install_requires=['selenium', 'bs4', 'python-dateutil', 'keyring']
 )
