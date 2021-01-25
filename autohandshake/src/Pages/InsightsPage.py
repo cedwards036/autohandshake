@@ -429,6 +429,7 @@ class InsightsPage(Page):
         YEAR_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%Y")}"]]'
         MONTH_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%B")}"]]'
         DAY_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%d")}" and not(contains(@class, "text-muted"))]]'
+        LEFT_BTN_XPATH = f'{MODAL_XPATH}//button[contains(@class, "pull-left")]'
 
         # open modal
         self._browser.click_element_by_xpath(calendar_xpath)
@@ -439,6 +440,9 @@ class InsightsPage(Page):
         self._browser.click_element_by_xpath(HEADING_BTN_XPATH)
 
         # select the date
+        if not self._browser.element_exists_by_xpath(YEAR_BTN_XPATH):
+            self._browser.click_element_by_xpath(LEFT_BTN_XPATH)
+            self._browser.wait_until_element_is_clickable_by_xpath(YEAR_BTN_XPATH)
         self._browser.click_element_by_xpath(YEAR_BTN_XPATH)
         self._browser.click_element_by_xpath(MONTH_BTN_XPATH)
         self._browser.click_element_by_xpath(DAY_BTN_XPATH)
