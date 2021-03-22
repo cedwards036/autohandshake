@@ -106,24 +106,24 @@ class _DownloadModal:
             raise ValueError(f'Invalid file type: "{file_type}"')
 
     @Page.require_user_type(UserType.STAFF)
-    def set_limit_to_all_results(self, remove_sorts: bool = False):
+    def set_limit_to_all_results(self, allow_large_results: bool = False):
         """
         If the download modal is open, set the download limit to "all results,"
-        optionally removing sorts on the query for increased performance.
+        optionally allowing for large query results (see https://cloud.google.com/bigquery/docs/writing-results#large-results?version=7.20)
 
-        :param remove_sorts: whether or not to remove sorts on the query
-        :type remove_sorts: bool
+        :param allow_large_results: whether or not to allow_large_results
+        :type allow_large_results: bool
         """
         self.validate_download_modal_is_open()
         all_results_radio_xpath = "//input[@name='qr-export-modal-limit' and @value='all']"
-        remove_sorts_xpath = "//input[@ng-model='queryDownloadController.runUnsorted']"
+        allow_large_results_xpath = "//input[@ng-model='queryDownloadController.allowLargeResults']"
         time.sleep(0.1)  # account for unknown, inconsistent timing error that prevents clicking
         try:
             self._browser.wait_until_element_is_clickable_by_xpath(all_results_radio_xpath)
             self._browser.click_element_by_xpath(all_results_radio_xpath)
-            if remove_sorts:
-                self._browser.wait_until_element_is_clickable_by_xpath(remove_sorts_xpath)
-                self._browser.click_element_by_xpath(remove_sorts_xpath)
+            if allow_large_results:
+                self._browser.wait_until_element_is_clickable_by_xpath(allow_large_results_xpath)
+                self._browser.click_element_by_xpath(allow_large_results_xpath)
         except NoSuchElementError:
             raise InsufficientPermissionsError('You do not have permission '
                                                'to download all results')
@@ -284,7 +284,7 @@ class InsightsPage(Page):
         self.modal.set_download_file_type(FileType.JSON)
         if limit is None:
             try:
-                self.modal.set_limit_to_all_results(remove_sorts=True)
+                self.modal.set_limit_to_all_results(allow_large_results=True)
             except InsufficientPermissionsError:
                 pass
                 # keep limit at "Results in Table" if "All Results" is not available
@@ -323,7 +323,7 @@ class InsightsPage(Page):
             self.modal.set_file_name(file_name)
         if limit is None:
             try:
-                self.modal.set_limit_to_all_results(remove_sorts=True)
+                self.modal.set_limit_to_all_results(allow_large_results=True)
             except InsufficientPermissionsError:
                 pass
                 # keep limit at "Results in Table" if "All Results" is not available

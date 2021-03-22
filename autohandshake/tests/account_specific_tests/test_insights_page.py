@@ -175,7 +175,7 @@ class TestInsightsPageDownloadModal(unittest.TestCase):
                 "//input[@name='qr-export-modal-limit' and @value='all']"))
             insights.modal.set_limit_to_all_results(True)
             self.assertTrue(browser.element_is_selected_by_xpath(
-                "//input[@ng-model='queryDownloadController.runUnsorted']"))
+                "//input[@ng-model='queryDownloadController.allowLargeResults']"))
 
     def test_set_custom_limit(self):
         valid_query = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vc3R1ZGVudHM_cWlkPXRoRnM0QnUyV2JKTHhQMDZ1dUpBT0QmZW1iZWRfZG9tYWluPWh0dHBzOiUyRiUyRmFwcC5qb2luaGFuZHNoYWtlLmNvbSZ0b2dnbGU9ZmlsLHBpaw=='
