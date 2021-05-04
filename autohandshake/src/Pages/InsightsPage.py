@@ -424,7 +424,7 @@ class InsightsPage(Page):
 
     def _select_calendar_date(self, calendar_xpath: str, select_date: date):
         """Select a date on an Insights page calendar widget."""
-        MODAL_XPATH = '//ul[@template-url="template/datepicker/popup.html"]'
+        MODAL_XPATH = '//ul[@class="uib-datepicker-popup dropdown-menu"]'
         HEADING_BTN_XPATH = f'{MODAL_XPATH}//button[@role="heading"]'
         YEAR_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%Y")}"]]'
         MONTH_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%B")}"]]'
