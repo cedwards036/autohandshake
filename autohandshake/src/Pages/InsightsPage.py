@@ -398,7 +398,10 @@ class InsightsPage(Page):
                     re.match(r'^[a-zA-Z0-9_]+(=){0,2}$', url) \
                         .group(0)
                 except AttributeError:
-                    raise InvalidURLError()
+                    try:
+                        re.match(f'^{BASE_URL}' + r'/analytics/reports/new\?looker_explore_name=[a-zA-Z0-9]+&qid=[a-zA-Z0-9]+', url).group(0)
+                    except AttributeError:
+                        raise InvalidURLError()
 
     def _wait_until_page_is_loaded(self):
         """Wait until the page has finished loading."""
@@ -430,6 +433,7 @@ class InsightsPage(Page):
         MONTH_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%B")}"]]'
         DAY_BTN_XPATH = f'{MODAL_XPATH}//button[./span[text()="{select_date.strftime("%d")}" and not(contains(@class, "text-muted"))]]'
         LEFT_BTN_XPATH = f'{MODAL_XPATH}//button[contains(@class, "pull-left")]'
+        RIGHT_BTN_XPATH = f'{MODAL_XPATH}//button[contains(@class, "pull-right")]'
 
         # open modal
         self._browser.click_element_by_xpath(calendar_xpath)
@@ -441,8 +445,11 @@ class InsightsPage(Page):
 
         # select the date
         if not self._browser.element_exists_by_xpath(YEAR_BTN_XPATH):
-            self._browser.click_element_by_xpath(LEFT_BTN_XPATH)
-            self._browser.wait_until_element_is_clickable_by_xpath(YEAR_BTN_XPATH)
+            self._browser.click_element_by_xpath(RIGHT_BTN_XPATH)
+            if not self._browser.element_exists_by_xpath(YEAR_BTN_XPATH):
+                self._browser.click_element_by_xpath(LEFT_BTN_XPATH)
+                self._browser.click_element_by_xpath(LEFT_BTN_XPATH)
+                self._browser.wait_until_element_is_clickable_by_xpath(YEAR_BTN_XPATH)
         self._browser.click_element_by_xpath(YEAR_BTN_XPATH)
         self._browser.click_element_by_xpath(MONTH_BTN_XPATH)
         self._browser.click_element_by_xpath(DAY_BTN_XPATH)

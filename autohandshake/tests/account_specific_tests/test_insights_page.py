@@ -111,7 +111,7 @@ class TestInsightsPage(unittest.TestCase):
             self.assertEqual(new_end.strftime('%Y-%m-%d'),
                              insights._browser.get_element_attribute_by_xpath(field['end_xpath'], 'value'))
 
-        jobs_insights = 'https://app.joinhandshake.com/analytics/explore_embed?insights_page=ZXhwbG9yZS9nZW5lcmF0ZWRfaGFuZHNoYWtlX3Byb2R1Y3Rpb24vam9icz9xaWQ9UVJ3OVZRR2xORHVnYnVQZWJtYVI3diZlbWJlZF9kb21haW49aHR0cHM6JTJGJTJGYXBwLmpvaW5oYW5kc2hha2UuY29tJnRvZ2dsZT1maWw='
+        jobs_insights = 'https://app.joinhandshake.com/analytics/reports/new?looker_explore_name=jobs&qid=2h81ydm999X0w4Q8YYBQu5'
         field1 = {'category': 'Postings', 'title': 'Created At Date',
                   'old_start_date': '2007-05-09', 'old_end_date': '2014-05-07',
                   'start_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[2]/td[3]/lk-filter/table/tbody/tr/td[2]/span[2]/span[1]/input',
@@ -123,7 +123,7 @@ class TestInsightsPage(unittest.TestCase):
                   'end_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[3]/td[3]/lk-filter/table/tbody/tr/td[2]/span[3]/span/input'}
 
         field3 = {'category': 'Jobs', 'title': 'Start Date Date',
-                  'old_start_date': '2019-04-02', 'old_end_date': '2019-04-16',
+                  'old_start_date': '2019-04-02', 'old_end_date': '2021-02-02',
                   'start_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[1]/td[3]/lk-filter/table/tbody/tr/td[2]/span[2]/span[1]/input',
                   'end_xpath': '//*[@id="lk-embed-container"]/lk-explore-dataflux/div[2]/lk-explore-content/div/div/lk-filter-pane/lk-expandable-pane/div[2]/expandable-pane-content/lk-query-filters/table/tbody/tr[1]/td[3]/lk-filter/table/tbody/tr/td[2]/span[3]/span/input'}
 
@@ -134,7 +134,7 @@ class TestInsightsPage(unittest.TestCase):
                             datetime.strptime('12/03/2017', '%m/%d/%Y').date())
             test_date_field(insights, field2, datetime.strptime('12/02/2008', '%m/%d/%Y').date(),
                             datetime.strptime('05/29/2019', '%m/%d/%Y').date())
-            test_date_field(insights, field3, datetime.strptime('01/02/2013', '%m/%d/%Y').date(),
+            test_date_field(insights, field3, datetime.strptime('01/02/2021', '%m/%d/%Y').date(),
                             datetime.strptime('02/03/2014', '%m/%d/%Y').date())
 
 
